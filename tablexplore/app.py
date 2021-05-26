@@ -674,9 +674,7 @@ class Application(QMainWindow):
         sheet.addWidget(pf)
         sheet.setSizes((600, 400))
         # reload attributes of table and plotter if present
-        if meta != None:
-            self.loadMeta(dfw, meta)
-        self.main.setCurrentIndex(idx)
+
         return
 
     def removeSheet(self, index, ask=True):
