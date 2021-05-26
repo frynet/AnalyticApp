@@ -97,14 +97,13 @@ class Application(QMainWindow):
         self.plots = {}
 
         self.loadSettings()
-        self.showRecentFiles()
-        if project_file != None:
-            self.openProject(project_file)
-        elif csv_file != None:
-            self.newProject()
-            self.importFile(csv_file)
-        else:
-            self.newProject()
+
+        self.sheets = OrderedDict()
+
+        # open dataframe and load it into the tab
+        df = pd.read_excel(os.getcwd() + '/sorted.xlsx')
+        self.addSheet(df=df)
+
         self.threadpool = QtCore.QThreadPool()
         self.discoverPlugins()
         return
