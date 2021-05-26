@@ -151,20 +151,6 @@ class PlotViewer(QWidget):
         # vbox.addWidget(bw)
         self.vbox = vbox = QVBoxLayout(left)
         self.addPlotWidget()
-
-        self.dock = dock = QDockWidget('options', self)
-        dock.setMaximumWidth(280)
-        dock.setMinimumWidth(220)
-        dock.setFeatures(QDockWidget.DockWidgetClosable)
-        scrollarea = QScrollArea(dock)
-        scrollarea.setWidgetResizable(True)
-        dock.setWidget(scrollarea)
-        toolsarea = QWidget()
-        toolsarea.setMinimumSize(180, 900)
-        scrollarea.setWidget(toolsarea)
-        hbox.addWidget(dock)
-        ow = self.createDialogs(toolsarea)
-        # dock.setWidget(ow)
         return
 
     def setFigure(self, figure):
