@@ -25,6 +25,7 @@ import os, types, io
 import string, copy
 from collections import OrderedDict
 import pandas as pd
+
 try:
     import configparser
 except:
@@ -34,6 +35,7 @@ from . import util, core
 
 module_path = os.path.dirname(os.path.abspath(__file__))
 iconpath = os.path.join(module_path, 'icons')
+
 
 def dialogFromOptions(parent, opts, sections=None,
                       wrap=2, section_wrap=4,
@@ -71,15 +73,15 @@ def dialogFromOptions(parent, opts, sections=None,
     l = QGridLayout(dialog)
     l.setSpacing(1)
     l.setAlignment(QtCore.Qt.AlignLeft)
-    scol=1
-    srow=1
+    scol = 1
+    srow = 1
     for s in sections:
-        row=srow
-        col=1
+        row = srow
+        col = 1
         f = QWidget()
-        f.resize(50,100)
+        f.resize(50, 100)
         f.sizeHint()
-        l.addWidget(f,row,scol)
+        l.addWidget(f, row, scol)
         gl = QGridLayout(f)
         gl.setAlignment(QtCore.Qt.AlignTop)
         gl.setSpacing(5)
@@ -92,7 +94,7 @@ def dialogFromOptions(parent, opts, sections=None,
             val = opt['default']
             t = opt['type']
             lbl = QLabel(label)
-            gl.addWidget(lbl,row,col)
+            gl.addWidget(lbl, row, col)
             lbl.setStyleSheet(style)
             if t == 'combobox':
                 w = QComboBox()
@@ -101,7 +103,7 @@ def dialogFromOptions(parent, opts, sections=None,
                 if index != -1:
                     w.setCurrentIndex(index)
                 if 'editable' in opt:
-                     w.setEditable(True)
+                    w.setEditable(True)
                 if 'width' in opt:
                     w.setMinimumWidth(opt['width'])
                     w.resize(opt['width'], 20)
@@ -117,11 +119,11 @@ def dialogFromOptions(parent, opts, sections=None,
                     w.resize(opt['width'], 20)
             elif t == 'textarea':
                 w = QPlainTextEdit()
-                #w.setSizePolicy(sizepolicy)
+                # w.setSizePolicy(sizepolicy)
                 w.insertPlainText(str(val))
             elif t == 'slider':
                 w = QSlider(QtCore.Qt.Horizontal)
-                s,e = opt['range']
+                s, e = opt['range']
                 w.setTickInterval(opt['interval'])
                 w.setSingleStep(opt['interval'])
                 w.setMinimum(s)
@@ -135,8 +137,8 @@ def dialogFromOptions(parent, opts, sections=None,
                     w = QSpinBox()
                 w.setValue(val)
                 if 'range' in opt:
-                    min,max=opt['range']
-                    w.setRange(min,max)
+                    min, max = opt['range']
+                    w.setRange(min, max)
                     w.setMinimum(min)
                 if 'interval' in opt:
                     w.setSingleStep(opt['interval'])
@@ -146,25 +148,26 @@ def dialogFromOptions(parent, opts, sections=None,
             elif t == 'font':
                 w = QFontComboBox()
                 index = w.findText(val)
-                #w.resize(w.sizeHint())
+                # w.resize(w.sizeHint())
                 w.setCurrentIndex(index)
-            col+=1
-            gl.addWidget(w,row,col)
+            col += 1
+            gl.addWidget(w, row, col)
             w.setStyleSheet(style)
             widgets[o] = w
-            #print (o, row, col)
-            if col>=wrap:
-                col=1
-                row+=1
+            # print (o, row, col)
+            if col >= wrap:
+                col = 1
+                row += 1
             else:
-                col+=2
+                col += 2
 
         if scol >= section_wrap:
-            scol=1
-            srow+=2
+            scol = 1
+            srow += 2
         else:
-            scol+=1
+            scol += 1
     return dialog, widgets
+
 
 def getWidgetValues(widgets):
     """Get values back from a set of widgets"""
@@ -186,12 +189,13 @@ def getWidgetValues(widgets):
                 val = w.isChecked()
             elif type(w) is QSlider:
                 val = w.value()
-            elif type(w) in [QSpinBox,QDoubleSpinBox]:
+            elif type(w) in [QSpinBox, QDoubleSpinBox]:
                 val = w.value()
             if val != None:
                 kwds[i] = val
     kwds = kwds
     return kwds
+
 
 def setWidgetValues(widgets, values):
     """Set values for a set of widgets from a dict"""
@@ -200,7 +204,7 @@ def setWidgetValues(widgets, values):
     for i in values:
         val = values[i]
         if i in widgets:
-            #print (i, val, type(val))
+            # print (i, val, type(val))
             w = widgets[i]
             if type(w) is QLineEdit:
                 w.setText(str(val))
@@ -213,16 +217,17 @@ def setWidgetValues(widgets, values):
                 w.setChecked(val)
             elif type(w) is QSlider:
                 w.setValue(val)
-            elif type(w) in [QSpinBox,QDoubleSpinBox]:
+            elif type(w) in [QSpinBox, QDoubleSpinBox]:
                 w.setValue(val)
     return
+
 
 def addToolBarItems(toolbar, parent, items):
     """Populate toolbar from dict of items"""
 
     for i in items:
         if 'file' in items[i]:
-            iconfile = os.path.join(iconpath,items[i]['file']+'.png')
+            iconfile = os.path.join(iconpath, items[i]['file'] + '.png')
             icon = QIcon(iconfile)
         else:
             icon = QIcon.fromTheme(items[i]['icon'])
@@ -230,9 +235,10 @@ def addToolBarItems(toolbar, parent, items):
         btn.triggered.connect(items[i]['action'])
         if 'shortcut' in items[i]:
             btn.setShortcut(QKeySequence(items[i]['shortcut']))
-        #btn.setCheckable(True)
+        # btn.setCheckable(True)
         toolbar.addAction(btn)
     return toolbar
+
 
 class PlainTextEditor(QPlainTextEdit):
     def __init__(self, parent=None, **kwargs):
@@ -266,8 +272,10 @@ class PlainTextEditor(QPlainTextEdit):
         elif action == zoomoutAction:
             self.zoom(-1)
 
+
 class TextDialog(QDialog):
     """Text edit dialog"""
+
     def __init__(self, parent, text='', title='Text', width=400, height=300):
         super(TextDialog, self).__init__(parent)
         self.resize(width, height)
@@ -275,10 +283,10 @@ class TextDialog(QDialog):
         vbox = QVBoxLayout(self)
         b = self.textbox = PlainTextEditor(self)
         b.insertPlainText(text)
-        b.move(10,10)
-        b.resize(400,300)
+        b.move(10, 10)
+        b.resize(400, 300)
         vbox.addWidget(self.textbox)
-        #self.b.setFontFamily('fixed')
+        # self.b.setFontFamily('fixed')
         buttonbox = QDialogButtonBox(self)
         buttonbox.setStandardButtons(QDialogButtonBox.Ok)
         buttonbox.button(QDialogButtonBox.Ok).clicked.connect(self.close)
@@ -286,19 +294,21 @@ class TextDialog(QDialog):
         self.show()
         return
 
+
 class MultipleInputDialog(QDialog):
     """Qdialog with multiple inputs"""
+
     def __init__(self, parent, options=None, title='Input', width=400, height=200):
         super(MultipleInputDialog, self).__init__(parent)
         self.values = None
         self.accepted = False
-        self.setMinimumSize(width, height)        
+        self.setMinimumSize(width, height)
         self.setWindowTitle(title)
         dialog, self.widgets = dialogFromOptions(self, options)
         vbox = QVBoxLayout(self)
         vbox.addWidget(dialog)
         buttonbox = QDialogButtonBox(self)
-        buttonbox.setStandardButtons(QDialogButtonBox.Cancel|QDialogButtonBox.Ok)
+        buttonbox.setStandardButtons(QDialogButtonBox.Cancel | QDialogButtonBox.Ok)
         buttonbox.button(QDialogButtonBox.Ok).clicked.connect(self.accept)
         buttonbox.button(QDialogButtonBox.Cancel).clicked.connect(self.close)
         vbox.addWidget(buttonbox)
@@ -311,6 +321,7 @@ class MultipleInputDialog(QDialog):
         self.close()
         return
 
+
 class ImportDialog(QDialog):
     """Provides a dialog for import settings"""
 
@@ -322,12 +333,12 @@ class ImportDialog(QDialog):
         self.df = None
         self.setGeometry(QtCore.QRect(250, 250, 900, 600))
         self.setGeometry(
-                QStyle.alignedRect(
-                    QtCore.Qt.LeftToRight,
-                    QtCore.Qt.AlignCenter,
-                    self.size(),
-                    QGuiApplication.primaryScreen().availableGeometry(),
-                ))
+            QStyle.alignedRect(
+                QtCore.Qt.LeftToRight,
+                QtCore.Qt.AlignCenter,
+                self.size(),
+                QGuiApplication.primaryScreen().availableGeometry(),
+            ))
         self.setWindowTitle('Import File')
         self.createWidgets()
         self.update()
@@ -337,61 +348,61 @@ class ImportDialog(QDialog):
     def createWidgets(self):
         """Create widgets"""
 
-        delimiters = [',',r'\t',' ','\s+',';','/','&','|','^','+','-']
-        encodings = ['utf-8','ascii','latin-1','iso8859_15','cp037','cp1252','big5','euc_jp']
-        timeformats = ['infer','%d/%m/%Y','%Y/%m/%d','%Y/%d/%m',
-                        '%Y-%m-%d %H:%M:%S','%Y-%m-%d %H:%M',
-                        '%d-%m-%Y %H:%M:%S','%d-%m-%Y %H:%M']
-        grps = {'formats':['sep','decimal','comment'],
-                'data':['skiprows','skipinitialspace',
-                        'skip_blank_lines','parse_dates','encoding','time format'],
-                'other':['rowsperfile']}
+        delimiters = [',', r'\t', ' ', '\s+', ';', '/', '&', '|', '^', '+', '-']
+        encodings = ['utf-8', 'ascii', 'latin-1', 'iso8859_15', 'cp037', 'cp1252', 'big5', 'euc_jp']
+        timeformats = ['infer', '%d/%m/%Y', '%Y/%m/%d', '%Y/%d/%m',
+                       '%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M',
+                       '%d-%m-%Y %H:%M:%S', '%d-%m-%Y %H:%M']
+        grps = {'formats': ['sep', 'decimal', 'comment'],
+                'data': ['skiprows', 'skipinitialspace',
+                         'skip_blank_lines', 'parse_dates', 'encoding', 'time format'],
+                'other': ['rowsperfile']}
         grps = OrderedDict(sorted(grps.items()))
-        opts = self.opts = {'sep':{'type':'combobox','default':',','editable':True,
-                        'items':delimiters, 'tooltip':'seperator'},
-                     #'header':{'type':'entry','default':0,'label':'header',
-                     #          'tooltip':'position of column header'},
-                     #'index_col':{'type':'spinbox','default':-1,'range':(-1,1000),'label':'index column',
-                    #            'tooltip':''},
-                     'decimal':{'type':'combobox','default':'.','items':['.',','],
-                                'tooltip':'decimal point symbol'},
-                     'comment':{'type':'entry','default':'#','label':'comment',
-                                'tooltip':'comment symbol'},
-                     'skipinitialspace':{'type':'checkbox','default':0,'label':'skip initial space',
-                                'tooltip':'skip initial space'},
-                     'skiprows':{'type':'spinbox','default':0,'label':'skiprows',
-                                'tooltip':'rows to skip'},
-                     'skip_blank_lines':  {'type':'checkbox','default':0,'label':'skip blank lines',
-                                'tooltip':'do not use blank lines'},
-                     'parse_dates':  {'type':'checkbox','default':1,'label':'parse dates',
-                                'tooltip':'try to parse date/time columns'},
-                     'time format': {'type':'combobox','default':'','items':timeformats,
-                                'tooltip':'date/time format'},
-                     'encoding':{'type':'combobox','default':'utf-8','items':encodings,
-                                'tooltip':'file encoding'},
-                     #'prefix':{'type':'entry','default':None,'label':'prefix',
-                     #           'tooltip':''}
-                     'rowsperfile':{'type':'spinbox','default':0,'label':'rows per file',
-                                'tooltip':'rows to read'},
-                     #'names':{'type':'entry','default':'','label':'column names',
-                    #            'tooltip':'col labels'},
-                     }
+        opts = self.opts = {'sep': {'type': 'combobox', 'default': ',', 'editable': True,
+                                    'items': delimiters, 'tooltip': 'seperator'},
+                            # 'header':{'type':'entry','default':0,'label':'header',
+                            #          'tooltip':'position of column header'},
+                            # 'index_col':{'type':'spinbox','default':-1,'range':(-1,1000),'label':'index column',
+                            #            'tooltip':''},
+                            'decimal': {'type': 'combobox', 'default': '.', 'items': ['.', ','],
+                                        'tooltip': 'decimal point symbol'},
+                            'comment': {'type': 'entry', 'default': '#', 'label': 'comment',
+                                        'tooltip': 'comment symbol'},
+                            'skipinitialspace': {'type': 'checkbox', 'default': 0, 'label': 'skip initial space',
+                                                 'tooltip': 'skip initial space'},
+                            'skiprows': {'type': 'spinbox', 'default': 0, 'label': 'skiprows',
+                                         'tooltip': 'rows to skip'},
+                            'skip_blank_lines': {'type': 'checkbox', 'default': 0, 'label': 'skip blank lines',
+                                                 'tooltip': 'do not use blank lines'},
+                            'parse_dates': {'type': 'checkbox', 'default': 1, 'label': 'parse dates',
+                                            'tooltip': 'try to parse date/time columns'},
+                            'time format': {'type': 'combobox', 'default': '', 'items': timeformats,
+                                            'tooltip': 'date/time format'},
+                            'encoding': {'type': 'combobox', 'default': 'utf-8', 'items': encodings,
+                                         'tooltip': 'file encoding'},
+                            # 'prefix':{'type':'entry','default':None,'label':'prefix',
+                            #           'tooltip':''}
+                            'rowsperfile': {'type': 'spinbox', 'default': 0, 'label': 'rows per file',
+                                            'tooltip': 'rows to read'},
+                            # 'names':{'type':'entry','default':'','label':'column names',
+                            #            'tooltip':'col labels'},
+                            }
 
         optsframe, self.widgets = dialogFromOptions(self, opts, grps, wrap=1, section_wrap=1)
         layout = QGridLayout()
-        layout.setColumnStretch(1,2)
-        layout.addWidget(optsframe,1,1)
+        layout.setColumnStretch(1, 2)
+        layout.addWidget(optsframe, 1, 1)
         optsframe.setMaximumWidth(300)
         bf = self.createButtons(optsframe)
-        layout.addWidget(bf,2,1)
+        layout.addWidget(bf, 2, 1)
 
         main = QSplitter(self)
         main.setOrientation(QtCore.Qt.Vertical)
-        layout.addWidget(main,1,2,2,1)
+        layout.addWidget(main, 1, 2, 2, 1)
 
         self.textarea = PlainTextEditor(main)
         main.addWidget(self.textarea)
-        self.textarea.resize(200,200)
+        self.textarea.resize(200, 200)
 
         t = self.previewtable = core.DataFrameTable(main, font=core.FONT)
         main.addWidget(t)
@@ -433,7 +444,7 @@ class ImportDialog(QDialog):
         self.values = getWidgetValues(self.widgets)
         timeformat = self.values['time format']
         if timeformat == 'infer':
-            dateparse=None
+            dateparse = None
         else:
             dateparse = lambda x: pd.datetime.strptime(x, timeformat)
         del self.values['time format']
@@ -441,23 +452,23 @@ class ImportDialog(QDialog):
         for k in self.values:
             if self.values[k] == '':
                 self.values[k] = None
-        #if self.values['index_col'] == -1:
+        # if self.values['index_col'] == -1:
         #    self.values['index_col'] = None
 
         try:
             f = pd.read_csv(self.filename, chunksize=400, error_bad_lines=False,
-                        warn_bad_lines=False, date_parser=dateparse, **self.values)
+                            warn_bad_lines=False, date_parser=dateparse, **self.values)
         except Exception as e:
-            print ('read csv error')
-            print (e)
+            print('read csv error')
+            print(e)
             return
         try:
             df = f.get_chunk()
         except UnicodeDecodeError:
-            print ('unicode error')
+            print('unicode error')
             df = pd.DataFrame()
         except pd.errors.ParserError:
-            print ('parser error')
+            print('parser error')
             df = pd.DataFrame()
 
         self.previewtable.model.df = df
@@ -476,8 +487,10 @@ class ImportDialog(QDialog):
         self.close()
         return
 
+
 class BasicDialog(QDialog):
     """Qdialog for table operations interfaces"""
+
     def __init__(self, parent, df, title=None):
 
         super(BasicDialog, self).__init__(parent)
@@ -537,7 +550,7 @@ class BasicDialog(QDialog):
         if self.app == None:
             return
         name, ok = QInputDialog().getText(self, "Enter Sheet Name",
-                                             "Name:", QLineEdit.Normal)
+                                          "Name:", QLineEdit.Normal)
         if ok and name:
             self.app.addSheet(name=name, df=self.table.model.df)
         return
@@ -554,9 +567,9 @@ class BasicDialog(QDialog):
 
         df = self.table.model.df
         options = QFileDialog.Options()
-        filename, _ = QFileDialog.getSaveFileName(self,"Export File",
-                             "","CSV files (*.csv);;",
-                             options=options)
+        filename, _ = QFileDialog.getSaveFileName(self, "Export File",
+                                                  "", "CSV files (*.csv);;",
+                                                  options=options)
         if not filename:
             return
         if not os.path.splitext(filename)[1] == '.csv':
@@ -568,8 +581,10 @@ class BasicDialog(QDialog):
         self.destroy()
         return
 
+
 class AggregateDialog(BasicDialog):
     """Qdialog with multiple inputs"""
+
     def __init__(self, parent, df, title='Groupby-Aggregate'):
 
         BasicDialog.__init__(self, parent, df, title)
@@ -579,7 +594,7 @@ class AggregateDialog(BasicDialog):
         """Create widgets"""
 
         cols = list(self.df.columns)
-        funcs = ['sum','mean','size','std','min','max','var']
+        funcs = ['sum', 'mean', 'size', 'std', 'min', 'max', 'var']
         vbox = QHBoxLayout(self)
         main = QWidget(self)
         main.setMaximumWidth(300)
@@ -617,11 +632,11 @@ class AggregateDialog(BasicDialog):
         """Do the operation"""
 
         grpcols = [i.text() for i in self.groupbyw.selectedItems()]
-        aggcols =[i.text() for i in self.aggw.selectedItems()]
+        aggcols = [i.text() for i in self.aggw.selectedItems()]
         funcs = [i.text() for i in self.funcw.selectedItems()]
         aggdict = {}
 
-        if len(funcs)==1: funcs=funcs[0]
+        if len(funcs) == 1: funcs = funcs[0]
         for a in aggcols:
             aggdict[a] = funcs
 
@@ -630,10 +645,11 @@ class AggregateDialog(BasicDialog):
         self.table.refresh()
         return
 
+
 class PivotDialog(BasicDialog):
     """Dialog to pivot table"""
-    def __init__(self, parent, df, title='Pivot'):
 
+    def __init__(self, parent, df, title='Pivot'):
         BasicDialog.__init__(self, parent, df, title)
         return
 
@@ -641,7 +657,7 @@ class PivotDialog(BasicDialog):
         """Create widgets"""
 
         cols = list(self.df.columns)
-        funcs = ['sum','mean','size','std','min','max','var']
+        funcs = ['sum', 'mean', 'size', 'std', 'min', 'max', 'var']
         vbox = QHBoxLayout(self)
         main = QWidget(self)
         main.setMaximumWidth(300)
@@ -677,13 +693,13 @@ class PivotDialog(BasicDialog):
         """Do the operation"""
 
         cols = [i.text() for i in self.columnsw.selectedItems()]
-        vals =[i.text() for i in self.valuesw.selectedItems()]
+        vals = [i.text() for i in self.valuesw.selectedItems()]
         idx = [i.text() for i in self.idxw.selectedItems()]
         aggfuncs = [i.text() for i in self.aggw.selectedItems()]
         res = pd.pivot_table(self.df, index=idx, columns=cols, values=vals, aggfunc=aggfuncs)
         names = res.index.names
         res = res.reset_index(col_level=2)
-        #print (res)
+        # print (res)
         if util.check_multiindex(res.columns) == 1:
             res.columns = res.columns.get_level_values(2)
 
@@ -691,10 +707,11 @@ class PivotDialog(BasicDialog):
         self.table.refresh()
         return
 
+
 class MeltDialog(BasicDialog):
     """Dialog to melt table"""
-    def __init__(self, parent, df, title='Melt'):
 
+    def __init__(self, parent, df, title='Melt'):
         BasicDialog.__init__(self, parent, df, title)
         return
 
@@ -702,7 +719,7 @@ class MeltDialog(BasicDialog):
         """Create widgets"""
 
         cols = list(self.df.columns)
-        funcs = ['sum','mean','size','std','min','max','var']
+        funcs = ['sum', 'mean', 'size', 'std', 'min', 'max', 'var']
         vbox = QHBoxLayout(self)
         main = QWidget(self)
         main.setMaximumWidth(300)
@@ -733,7 +750,7 @@ class MeltDialog(BasicDialog):
         """Do the operation"""
 
         idvars = [i.text() for i in self.idvarsw.selectedItems()]
-        value_vars =[i.text() for i in self.valuevarsw .selectedItems()]
+        value_vars = [i.text() for i in self.valuevarsw.selectedItems()]
         varname = self.varnamew.text()
         res = pd.melt(self.df, idvars, value_vars, varname)
 
@@ -741,8 +758,10 @@ class MeltDialog(BasicDialog):
         self.table.refresh()
         return
 
+
 class MergeDialog(BasicDialog):
     """Dialog to melt table"""
+
     def __init__(self, parent, df, title='Merge Tables'):
 
         BasicDialog.__init__(self, parent, df, title)
@@ -758,8 +777,8 @@ class MergeDialog(BasicDialog):
             self.df2 = None
             cols2 = []
         cols = list(self.df.columns)
-        ops = ['merge','concat']
-        how = ['inner','outer','left','right']
+        ops = ['merge', 'concat']
+        how = ['inner', 'outer', 'left', 'right']
         hbox = QHBoxLayout(self)
         main = QWidget(self)
         main.setMaximumWidth(300)
@@ -810,11 +829,11 @@ class MergeDialog(BasicDialog):
 
     def updateColumns(self):
 
-        #self.df2 =
+        # self.df2 =
         cols2 = self.df2.columns
-        #w = self.righton_w
-        #w.clear()
-        #w.addItems(cols2)
+        # w = self.righton_w
+        # w.clear()
+        # w.addItems(cols2)
         return
 
     def apply(self):
@@ -834,28 +853,28 @@ class MergeDialog(BasicDialog):
         op = self.ops_w.currentText()
         if op == 'merge':
             res = pd.merge(self.df, self.df2,
-                            left_on=lefton,
-                            right_on=righton,
-                            left_index=left_index,
-                            right_index=right_index,
-                            how=how,
-                            suffixes=(self.left_suffw .text(),self.right_suffw.text())
-                            )
+                           left_on=lefton,
+                           right_on=righton,
+                           left_index=left_index,
+                           right_index=right_index,
+                           how=how,
+                           suffixes=(self.left_suffw.text(), self.right_suffw.text())
+                           )
         else:
             res = pd.concat([self.df, self.df2])
         self.table.model.df = res
         self.table.refresh()
         return
 
+
 class ConvertTypesDialog(BasicDialog):
     """Dialog to melt table"""
-    def __init__(self, parent, df, title='Convert types'):
 
+    def __init__(self, parent, df, title='Convert types'):
         BasicDialog.__init__(self, parent, df, title)
         return
 
     def createButtons(self, parent):
-
         bw = self.button_widget = QWidget(parent)
         vbox = QVBoxLayout(bw)
         vbox.setAlignment(QtCore.Qt.AlignTop)
@@ -882,12 +901,12 @@ class ConvertTypesDialog(BasicDialog):
 
         res = []
         for col in self.df.columns:
-            res.append([col,str(self.df[col].dtype),''])
-        cols = ['name','type','convert']
+            res.append([col, str(self.df[col].dtype), ''])
+        cols = ['name', 'type', 'convert']
         info = pd.DataFrame(res, columns=cols)
 
         self.table = core.DataFrameTable(self, info, font=core.FONT)
-        types = ['int','float','categorical']
+        types = ['int', 'float', 'categorical']
 
         vbox.addWidget(self.table)
         bf = self.createButtons(self)
@@ -898,7 +917,7 @@ class ConvertTypesDialog(BasicDialog):
         """Do the operation"""
 
         idvars = [i.text() for i in self.idvarsw.selectedItems()]
-        value_vars =[i.text() for i in self.valuevarsw .selectedItems()]
+        value_vars = [i.text() for i in self.valuevarsw.selectedItems()]
         varname = self.varnamew.text()
         res = pd.melt(self.df, idvars, value_vars, varname)
 
@@ -906,16 +925,16 @@ class ConvertTypesDialog(BasicDialog):
         self.table.refresh()
         return
 
+
 class PreferencesDialog(QDialog):
     """Preferences dialog from config parser options"""
 
     def __init__(self, parent, options={}):
-
         super(PreferencesDialog, self).__init__(parent)
         self.parent = parent
         self.setWindowTitle('Preferences')
         self.resize(700, 200)
-        self.setGeometry(QtCore.QRect(300,300, 600, 200))
+        self.setGeometry(QtCore.QRect(300, 300, 600, 200))
         self.setMaximumWidth(600)
         self.setMaximumHeight(300)
         self.createWidgets(options)
@@ -927,24 +946,25 @@ class PreferencesDialog(QDialog):
 
         import pylab as plt
         colormaps = sorted(m for m in plt.cm.datad if not m.endswith("_r"))
-        timeformats = ['%m/%d/%Y','%d/%m/%Y','%d/%m/%y',
-                '%Y/%m/%d','%y/%m/%d','%Y/%d/%m',
-                '%d-%b-%Y','%b-%d-%Y',
-                '%Y-%m-%d %H:%M:%S','%Y-%m-%d %H:%M',
-                '%d-%m-%Y %H:%M:%S','%d-%m-%Y %H:%M']
-        self.opts = {'rowheight':{'type':'spinbox','default':18,'range':(5,50),'label':'row height'},
-                'columnwidth':{'type':'spinbox','range':(10,300),
-                'default': options['columnwidth'], 'label':'column width'},
-                'alignment':{'type':'combobox','default':'w','items':['left','right','center'],'label':'text align'},
-                'font':{'type':'font','default':'Arial','default':options['font']},
-                'fontsize':{'type':'slider','default':options['fontsize'],'range':(5,40),
-                            'interval':1,'label':'font size'},
-                'timeformat':{'type':'combobox','default':options['timeformat'],
-                            'items':timeformats,'label':'Date/Time format'}
-                #'floatprecision':{'type':'spinbox','default':2, 'label':'precision'},
-                }
-        sections = {'table':['alignment','rowheight','columnwidth'],
-                    'formats':['font','fontsize','timeformat']}
+        timeformats = ['%m/%d/%Y', '%d/%m/%Y', '%d/%m/%y',
+                       '%Y/%m/%d', '%y/%m/%d', '%Y/%d/%m',
+                       '%d-%b-%Y', '%b-%d-%Y',
+                       '%Y-%m-%d %H:%M:%S', '%Y-%m-%d %H:%M',
+                       '%d-%m-%Y %H:%M:%S', '%d-%m-%Y %H:%M']
+        self.opts = {'rowheight': {'type': 'spinbox', 'default': 18, 'range': (5, 50), 'label': 'row height'},
+                     'columnwidth': {'type': 'spinbox', 'range': (10, 300),
+                                     'default': options['columnwidth'], 'label': 'column width'},
+                     'alignment': {'type': 'combobox', 'default': 'w', 'items': ['left', 'right', 'center'],
+                                   'label': 'text align'},
+                     'font': {'type': 'font', 'default': 'Arial', 'default': options['font']},
+                     'fontsize': {'type': 'slider', 'default': options['fontsize'], 'range': (5, 40),
+                                  'interval': 1, 'label': 'font size'},
+                     'timeformat': {'type': 'combobox', 'default': options['timeformat'],
+                                    'items': timeformats, 'label': 'Date/Time format'}
+                     # 'floatprecision':{'type':'spinbox','default':2, 'label':'precision'},
+                     }
+        sections = {'table': ['alignment', 'rowheight', 'columnwidth'],
+                    'formats': ['font', 'fontsize', 'timeformat']}
 
         dialog, self.widgets = dialogFromOptions(self, self.opts, sections)
 
@@ -956,7 +976,6 @@ class PreferencesDialog(QDialog):
         return
 
     def createButtons(self, parent):
-
         bw = self.button_widget = QWidget(parent)
         vbox = QHBoxLayout(bw)
         button = QPushButton("Apply")
@@ -979,33 +998,35 @@ class PreferencesDialog(QDialog):
         self.parent.refresh()
         return
 
+
 class FilterDialog(QWidget):
     """Qdialog for table query/filtering"""
+
     def __init__(self, parent, table, title=None):
 
         super(FilterDialog, self).__init__(parent)
         self.parent = parent
-        #self.app = self.parent.app
+        # self.app = self.parent.app
         self.table = table
         self.setWindowTitle(title)
-        self.resize(400,200)
+        self.resize(400, 200)
         self.createWidgets()
         self.filters = []
-        #self.setMinimumHeight(200)
-        #self.show()
+        # self.setMinimumHeight(200)
+        # self.show()
         return
 
     def createToolBar(self, parent):
 
-        items = {'Apply': {'action':self.apply,'file':'filter'},
-                 'Add': {'action':self.addFilter,'file':'add'},
-                 'Refresh': {'action':self.refresh,'file':'table-refresh'},
-                 'Subtract': {'action':self.removeFiltered,'file':'table-remove'}
+        items = {'Apply': {'action': self.apply, 'file': 'filter'},
+                 'Add': {'action': self.addFilter, 'file': 'add'},
+                 'Refresh': {'action': self.refresh, 'file': 'table-refresh'},
+                 'Subtract': {'action': self.removeFiltered, 'file': 'table-remove'}
                  }
         toolbar = QToolBar("Toolbar")
         toolbar.setOrientation(QtCore.Qt.Horizontal)
         addToolBarItems(toolbar, self, items)
-        #vbox.addWidget(toolbar)
+        # vbox.addWidget(toolbar)
         return toolbar
 
     def createWidgets(self):
@@ -1017,11 +1038,11 @@ class FilterDialog(QWidget):
         self.setLayout(self.layout)
         self.query_w = QLineEdit()
         self.layout.addWidget(QLabel('String filter'))
-        self.layout.addWidget(self.query_w )
+        self.layout.addWidget(self.query_w)
         self.query_w.returnPressed.connect(self.apply)
         w = self.column_w = QListWidget()
         w.setSelectionMode(QAbstractItemView.MultiSelection)
-        #w.setFixedHeight(60)
+        # w.setFixedHeight(60)
         w.addItems(cols)
         self.layout.addWidget(QLabel('Filter Columns'))
         self.layout.addWidget(self.column_w)
@@ -1054,7 +1075,7 @@ class FilterDialog(QWidget):
 
         df = self.table.model.df
         fb = FilterBar(self, self.table)
-        self.layout.insertWidget(4,fb)
+        self.layout.insertWidget(4, fb)
         self.filters.append(fb)
         return
 
@@ -1069,18 +1090,18 @@ class FilterDialog(QWidget):
 
         s = self.query_w.text()
         cols = [i.text() for i in self.column_w.selectedItems()]
-        if len(cols)>0:
+        if len(cols) > 0:
             df = df[cols]
-        if s!='':
+        if s != '':
             try:
                 mask = df.eval(s)
             except:
                 mask = df.eval(s, engine='python')
 
-        #add widget based filters
-        if len(self.filters)>0:
+        # add widget based filters
+        if len(self.filters) > 0:
             mask = self.applyWidgetFilters(df, mask)
-        #apply mask
+        # apply mask
         if mask is not None:
             df = df[mask]
         self.filtdf = df
@@ -1096,7 +1117,7 @@ class FilterDialog(QWidget):
         """Apply the widget based filters, returns a boolean mask"""
 
         if mask is None:
-            mask = df.index==df.index
+            mask = df.index == df.index
 
         for f in self.filters:
             col, val, op, b = f.getFilter()
@@ -1104,17 +1125,17 @@ class FilterDialog(QWidget):
                 val = float(val)
             except:
                 pass
-            print (col, val, op, b)
+            print(col, val, op, b)
             if op == 'contains':
                 m = df[col].str.contains(str(val))
             elif op == 'equals':
-                m = df[col]==val
+                m = df[col] == val
             elif op == 'not equals':
-                m = df[col]!=val
+                m = df[col] != val
             elif op == '>':
-                m = df[col]>val
+                m = df[col] > val
             elif op == '<':
-                m = df[col]<val
+                m = df[col] < val
             elif op == 'is empty':
                 m = df[col].isnull()
             elif op == 'not empty':
@@ -1124,7 +1145,7 @@ class FilterDialog(QWidget):
             elif op == 'starts with':
                 m = df[col].str.startswith(val)
             elif op == 'has length':
-                m = df[col].str.len()>val
+                m = df[col].str.len() > val
             elif op == 'is number':
                 m = df[col].astype('object').str.isnumeric()
             elif op == 'is lowercase':
@@ -1145,8 +1166,8 @@ class FilterDialog(QWidget):
         """Subtract current filtered result from original table"""
 
         reply = QMessageBox.question(self, 'Perform Action?',
-                             'This will overwrite the current table. Are you sure?',
-                              QMessageBox.Yes, QMessageBox.No)
+                                     'This will overwrite the current table. Are you sure?',
+                                     QMessageBox.Yes, QMessageBox.No)
         if reply == QMessageBox.No:
             return
         table = self.table
@@ -1166,21 +1187,23 @@ class FilterDialog(QWidget):
         self.table.showAll()
         self.close()
 
+
 class FilterBar(QWidget):
     """Single Widget based filter"""
+
     def __init__(self, parent, table):
         super(FilterBar, self).__init__(parent)
         self.parent = parent
-        #self.app = self.parent.app
+        # self.app = self.parent.app
         self.table = table
         self.createWidgets()
 
     def createWidgets(self):
         """Create widgets"""
 
-        operators = ['contains','excludes','equals','not equals','>','<','is empty','not empty',
-                     'starts with','ends with','has length','is number','is lowercase','is uppercase']
-        booleanops = ['AND','OR','NOT']
+        operators = ['contains', 'excludes', 'equals', 'not equals', '>', '<', 'is empty', 'not empty',
+                     'starts with', 'ends with', 'has length', 'is number', 'is lowercase', 'is uppercase']
+        booleanops = ['AND', 'OR', 'NOT']
         df = self.table.model.df
         cols = list(df.columns)
         l = self.layout = QHBoxLayout(self)
@@ -1190,15 +1213,15 @@ class FilterBar(QWidget):
         l.addWidget(self.boolean_w)
         w = self.column_w = QComboBox()
         w.addItems(cols)
-        #l.addWidget(QLabel('Column:'))
+        # l.addWidget(QLabel('Column:'))
         l.addWidget(self.column_w)
         w = self.operator_w = QComboBox()
         w.addItems(operators)
         l.addWidget(self.operator_w)
 
         self.term_w = QLineEdit()
-        l.addWidget(self.term_w )
-        icon = QIcon(os.path.join(iconpath,'remove.png'))
+        l.addWidget(self.term_w)
+        icon = QIcon(os.path.join(iconpath, 'remove.png'))
         btn = QPushButton()
         btn.setIcon(icon)
         btn.setMaximumWidth(30)

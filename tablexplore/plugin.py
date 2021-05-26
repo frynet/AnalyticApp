@@ -23,7 +23,7 @@
 
 from __future__ import absolute_import, division, print_function
 import inspect
-import sys,os,platform,time,traceback
+import sys, os, platform, time, traceback
 import pickle, gzip
 from collections import OrderedDict
 from .qt import *
@@ -36,10 +36,11 @@ module_path = os.path.dirname(os.path.abspath(__file__))
 stylepath = os.path.join(module_path, 'styles')
 iconpath = os.path.join(module_path, 'icons')
 
+
 class Plugin(object):
     """Base Plugin class, should be inherited by any plugin"""
 
-    #capabilities can be 'gui', 'docked'
+    # capabilities can be 'gui', 'docked'
     capabilities = []
     requires = []
     menuentry = ''
@@ -49,7 +50,7 @@ class Plugin(object):
         return
 
     def main(self, parent=None):
-        if parent==None:
+        if parent == None:
             return
         self.parent = parent
         self.ID = self.menuentry
@@ -80,8 +81,8 @@ class Plugin(object):
             self.capabilities)
 
     def quit(self, evt=None):
-
         return
+
 
 def load_plugins(plugins):
     """Load plugins"""
@@ -89,13 +90,14 @@ def load_plugins(plugins):
     failed = []
     for plugin in plugins:
         try:
-            print (plugin)
+            print(plugin)
             __import__(plugin, None, None, [''])
         except Exception as e:
-            print('failed to load %s plugin' %plugin)
+            print('failed to load %s plugin' % plugin)
             print(e)
-            failed.append((plugin,e))
+            failed.append((plugin, e))
     return failed
+
 
 def init_plugin_system(folders):
     """Find available plugins"""
@@ -104,57 +106,62 @@ def init_plugin_system(folders):
         if not os.path.exists(folder):
             continue
         if not folder in sys.path:
-             sys.path.insert(0, folder)
+            sys.path.insert(0, folder)
         plugins = parsefolder(folder)
-        #print (plugins)
+        # print (plugins)
         failed = load_plugins(plugins)
     return failed
+
 
 def find_plugins():
     return Plugin.__subclasses__()
 
+
 def parsefolder(folder):
     """Parse for all .py files in plugins folder or zip archive"""
 
-    filenms=[]
+    filenms = []
     homedir = os.path.expanduser("~")
     if os.path.isfile(folder):
-        #if in zip file, we need to handle that (installer distr)
+        # if in zip file, we need to handle that (installer distr)
         import zipfile
-        zf = zipfile.ZipFile(folder,'r')
+        zf = zipfile.ZipFile(folder, 'r')
         dirlist = zf.namelist()
         for x in dirlist:
             if 'plugins' in x and x.endswith('.py'):
-                print (x)
+                print(x)
                 zf.extract(x)
         zf.close()
-        #copy plugins to home dir where they will be found
-        shutil.copytree('plugins', os.path.join(homedir,'plugins'))
+        # copy plugins to home dir where they will be found
+        shutil.copytree('plugins', os.path.join(homedir, 'plugins'))
 
     elif os.path.isdir(folder):
         dirlist = os.listdir(folder)
-        filenm=""
+        filenm = ""
         for x in dirlist:
-             filenm = x
-             if filenm.endswith("py"):
-                 filenms.append(os.path.splitext(filenm)[0])
+            filenm = x
+            if filenm.endswith("py"):
+                filenms.append(os.path.splitext(filenm)[0])
         filenms.sort()
         filenameslist = [os.path.basename(y) for y in filenms]
         return filenameslist
 
+
 _instances = {}
+
 
 def get_plugins_instances(capability):
     """Returns instances of available plugins"""
 
     result = []
     for plugin in Plugin.__subclasses__():
-        print (plugin)
+        print(plugin)
         if capability in plugin.capabilities:
             if not plugin in _instances:
                 _instances[plugin] = plugin()
             result.append(_instances[plugin])
     return result
+
 
 def get_plugins_classes(capability):
     """Returns classes of available plugins"""
@@ -165,6 +172,7 @@ def get_plugins_classes(capability):
             result.append(plugin)
     return result
 
+
 def describe_class(obj):
     """ Describe the class object passed as argument,
        including its methods """
@@ -172,48 +180,48 @@ def describe_class(obj):
     import inspect
     methods = []
     cl = obj.__class__
-    print ('Class: %s' % cl.__name__)
+    print('Class: %s' % cl.__name__)
     count = 0
     for name in cl.__dict__:
-       item = getattr(cl, name)
-       if inspect.ismethod(item):
-           count += 1
-           #describe_func(item, True)
-           methods.append(item)
+        item = getattr(cl, name)
+        if inspect.ismethod(item):
+            count += 1
+            # describe_func(item, True)
+            methods.append(item)
 
-    if count==0:
-      print ('No members')
+    if count == 0:
+        print('No members')
     return methods
 
 
 def describe_func(obj, method=False):
-   """ Describe the function object passed as argument.
-   If this is a method object, the second argument will
-   be passed as True """
+    """ Describe the function object passed as argument.
+    If this is a method object, the second argument will
+    be passed as True """
 
-   try:
-       arginfo = inspect.getargspec(obj)
-   except TypeError:
-      print
-      return
+    try:
+        arginfo = inspect.getargspec(obj)
+    except TypeError:
+        print
+        return
 
-   args = arginfo[0]
-   argsvar = arginfo[1]
+    args = arginfo[0]
+    argsvar = arginfo[1]
 
-   if args:
-       if args[0] == 'self':
-           wi('\t%s is an instance method' % obj.__name__)
-           args.pop(0)
+    if args:
+        if args[0] == 'self':
+            wi('\t%s is an instance method' % obj.__name__)
+            args.pop(0)
 
-       wi('\t-Method Arguments:', args)
+        wi('\t-Method Arguments:', args)
 
-       if arginfo[3]:
-           dl = len(arginfo[3])
-           al = len(args)
-           defargs = args[al-dl:al]
-           wi('\t--Default arguments:',zip(defargs, arginfo[3]))
+        if arginfo[3]:
+            dl = len(arginfo[3])
+            al = len(args)
+            defargs = args[al - dl:al]
+            wi('\t--Default arguments:', zip(defargs, arginfo[3]))
 
-   if arginfo[1]:
-       wi('\t-Positional Args Param: %s' % arginfo[1])
-   if arginfo[2]:
-       wi('\t-Keyword Args Param: %s' % arginfo[2])
+    if arginfo[1]:
+        wi('\t-Positional Args Param: %s' % arginfo[1])
+    if arginfo[2]:
+        wi('\t-Keyword Args Param: %s' % arginfo[2])

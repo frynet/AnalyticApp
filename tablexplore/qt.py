@@ -1,4 +1,3 @@
-
 """
     TablExplore app
     Created January 2021

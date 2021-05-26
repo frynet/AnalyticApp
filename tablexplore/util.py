@@ -27,11 +27,12 @@ import numpy as np
 import pandas as pd
 import matplotlib
 
-def getEmptyData(rows=10,columns=4):
 
+def getEmptyData(rows=10, columns=4):
     colnames = list(string.ascii_lowercase[:columns])
-    df = pd.DataFrame(index=range(rows),columns=colnames)
+    df = pd.DataFrame(index=range(rows), columns=colnames)
     return df
+
 
 def check_multiindex(index):
     """Check if index is a multiindex"""
@@ -41,11 +42,12 @@ def check_multiindex(index):
     else:
         return 0
 
+
 def getAttributes(obj):
     """Get non hidden and built-in type object attributes that can be persisted"""
 
-    d={}
-    allowed = [str,int,float,list,tuple,bool,matplotlib.figure.Figure]
+    d = {}
+    allowed = [str, int, float, list, tuple, bool, matplotlib.figure.Figure]
     for key in obj.__dict__:
         if key.startswith('_'):
             continue
@@ -57,6 +59,7 @@ def getAttributes(obj):
                 d[key] = item
     return d
 
+
 def setAttributes(obj, data):
     """Set attributes from a dict. Used for restoring settings in tables"""
 
@@ -64,13 +67,14 @@ def setAttributes(obj, data):
         try:
             obj.__dict__[key] = data[key]
         except Exception as e:
-            print (e)
+            print(e)
     return
+
 
 def checkDict(d):
     """Check a dict recursively for non serializable types"""
 
-    allowed = [str,int,float,list,tuple,bool]
+    allowed = [str, int, float, list, tuple, bool]
     for k, v in d.items():
         if isinstance(v, dict):
             checkDict(v)
@@ -79,21 +83,25 @@ def checkDict(d):
                 return 0
     return 1
 
-def getFonts():
-     """Get the current list of system fonts"""
 
-     import matplotlib.font_manager
-     #l = matplotlib.font_manager.get_fontconfig_fonts()
-     l = matplotlib.font_manager.findSystemFonts()
-     fonts = []
-     for fname in l:
-        try: fonts.append(matplotlib.font_manager.FontProperties(fname=fname).get_name())
-        except RuntimeError: pass
-     fonts = list(set(fonts))
-     fonts.sort()
-     #f = matplotlib.font_manager.FontProperties(family='monospace')
-     #print (matplotlib.font_manager.findfont(f))
-     return fonts
+def getFonts():
+    """Get the current list of system fonts"""
+
+    import matplotlib.font_manager
+    # l = matplotlib.font_manager.get_fontconfig_fonts()
+    l = matplotlib.font_manager.findSystemFonts()
+    fonts = []
+    for fname in l:
+        try:
+            fonts.append(matplotlib.font_manager.FontProperties(fname=fname).get_name())
+        except RuntimeError:
+            pass
+    fonts = list(set(fonts))
+    fonts.sort()
+    # f = matplotlib.font_manager.FontProperties(family='monospace')
+    # print (matplotlib.font_manager.findfont(f))
+    return fonts
+
 
 def adjustColorMap(cmap, minval=0.0, maxval=1.0, n=100):
     """Adjust colormap to avoid using white in plots"""
@@ -104,22 +112,24 @@ def adjustColorMap(cmap, minval=0.0, maxval=1.0, n=100):
         cmap(np.linspace(minval, maxval, n)))
     return new_cmap
 
+
 def colorScale(hex_color, brightness_offset=1):
     """Takes a hex color and produces a lighter or darker variant.
     Returns:
         new color in hex format
     """
 
-    #if not hex_color.startswith('#'):
-        #import matplotlib
-        #hex_color = matplotlib.colors.cnames[hex_color].lower()
+    # if not hex_color.startswith('#'):
+    # import matplotlib
+    # hex_color = matplotlib.colors.cnames[hex_color].lower()
     if len(hex_color) != 7:
         raise Exception("Passed %s into color_variant(), needs to be in #87c95f format." % hex_color)
-    rgb_hex = [hex_color[x:x+2] for x in [1, 3, 5]]
+    rgb_hex = [hex_color[x:x + 2] for x in [1, 3, 5]]
     new_rgb_int = [max(0, int(hex_value, 16) + brightness_offset) for hex_value in rgb_hex]
-    r,g,b = [min([255, max([1, i])]) for i in new_rgb_int]
+    r, g, b = [min([255, max([1, i])]) for i in new_rgb_int]
     # hex() produces "0x88", we want just "88"
     return "#{0:02x}{1:02x}{2:02x}".format(r, g, b)
+
 
 def checkOS():
     """Check the OS we are in"""

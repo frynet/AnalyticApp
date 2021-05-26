@@ -25,12 +25,13 @@ from queue import Queue
 from contextlib import redirect_stdout
 from . import terminal
 
+
 class TerminalPython(terminal.Terminal):
     def __init__(self, parent=None, table=None, app=None):
         super(TerminalPython, self).__init__(parent=parent)
         # Init interpreter and add globals to context that give access from it.
         self.interpreter = Interpreter(extra_context=globals().copy(), table=table, app=app,
-                            stream_err=True, stream_out=True)
+                                       stream_err=True, stream_out=True)
         # active queue thread with queue interpreter
         self.active_queue_thread(self.interpreter.queue)
         # define prompt
@@ -41,13 +42,14 @@ class TerminalPython(terminal.Terminal):
         # start interpreter
         self.interpreter.interact()
 
+
 class Streamer(object):
     def __init__(self, queue):
         self.queue = queue
 
     def write(self, text):
         if bool(text and text.strip()):
-            #text = text.replace("\n", "")
+            # text = text.replace("\n", "")
             self.queue.put(text)
 
     def flush(self):
@@ -56,7 +58,7 @@ class Streamer(object):
 
 class Interpreter(code.InteractiveConsole):
     def __init__(self, extra_context=dict(), stream_out=True, stream_err=True,
-            table=None, app=None):
+                 table=None, app=None):
         """
         Init an interpreter, get globals and locals from current context.
         Define classic python prompt style.
@@ -84,12 +86,12 @@ class Interpreter(code.InteractiveConsole):
         except AttributeError:
             sys.ps2 = "... "
         self.prompt = sys.ps1
-        #reference to table
+        # reference to table
         self.table = table
         self.app = app
-        context.update({'df':table.model.df})
+        context.update({'df': table.model.df})
         import pandas as pd
-        context.update({'pd':pd})
+        context.update({'pd': pd})
         return
 
     def write(self, data):

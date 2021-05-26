@@ -22,7 +22,7 @@
 """
 
 from __future__ import absolute_import, division, print_function
-import sys,os,platform,time,traceback
+import sys, os, platform, time, traceback
 import pickle, gzip
 from collections import OrderedDict
 from .qt import *
@@ -37,20 +37,22 @@ stylepath = os.path.join(module_path, 'styles')
 iconpath = os.path.join(module_path, 'icons')
 pluginiconpath = os.path.join(module_path, 'plugins', 'icons')
 
+
 class ProgressWidget(QDialog):
     """Progress widget class"""
+
     def __init__(self, parent=None, label=''):
         super(ProgressWidget, self).__init__(parent)
         layout = QVBoxLayout(self)
         self.setWindowTitle('Saving..')
-        self.setMinimumSize(400,100)
+        self.setMinimumSize(400, 100)
         self.setGeometry(
-                QStyle.alignedRect(
-                    QtCore.Qt.LeftToRight,
-                    QtCore.Qt.AlignCenter,
-                    self.size(),
-                    QGuiApplication.primaryScreen().availableGeometry(),
-                ))
+            QStyle.alignedRect(
+                QtCore.Qt.LeftToRight,
+                QtCore.Qt.AlignCenter,
+                self.size(),
+                QGuiApplication.primaryScreen().availableGeometry(),
+            ))
         self.setMaximumHeight(100)
         self.label = QLabel(label)
         layout.addWidget(self.label)
@@ -61,22 +63,23 @@ class ProgressWidget(QDialog):
 
         return
 
+
 class Application(QMainWindow):
     def __init__(self, project_file=None, csv_file=None):
 
         QMainWindow.__init__(self)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
-        self.setWindowTitle("Tablexplore")
-        self.setWindowIcon(QIcon(os.path.join(module_path,'logo.png')))
+        self.setWindowTitle("Анализ Озёр")
+        self.setWindowIcon(QIcon(os.path.join(module_path, 'logo.png')))
 
         self.createMenu()
         self.main = QTabWidget(self)
         self.main.setTabsClosable(True)
         self.main.tabCloseRequested.connect(lambda index: self.removeSheet(index))
         screen_resolution = QGuiApplication.primaryScreen().availableGeometry()
-        width, height = screen_resolution.width()*0.7, screen_resolution.height()*.7
+        width, height = screen_resolution.width() * 0.7, screen_resolution.height() * .7
         self.setGeometry(QtCore.QRect(200, 200, width, height))
-        self.setMinimumSize(400,300)
+        self.setMinimumSize(400, 300)
 
         self.main.setFocus()
         self.setCentralWidget(self.main)
@@ -109,7 +112,7 @@ class Application(QMainWindow):
     def loadSettings(self):
         """Load GUI settings"""
 
-        s = self.settings = QtCore.QSettings('tablexplore','default')
+        s = self.settings = QtCore.QSettings('tablexplore', 'default')
         try:
             self.resize(s.value('window_size'))
             self.move(s.value('window_position'))
@@ -138,10 +141,10 @@ class Application(QMainWindow):
         self.settings.setValue('font', core.FONT)
         self.settings.setValue('fontsize', core.FONTSIZE)
         self.settings.setValue('timeformat', core.TIMEFORMAT)
-        self.settings.setValue('recent_files',','.join(self.recent_files))
-        self.settings.setValue('recent_urls','^^'.join(self.recent_urls))
+        self.settings.setValue('recent_files', ','.join(self.recent_files))
+        self.settings.setValue('recent_urls', '^^'.join(self.recent_urls))
         if hasattr(self, 'plotgallery'):
-            self.settings.setValue('plotgallery_size',self.plotgallery.size())
+            self.settings.setValue('plotgallery_size', self.plotgallery.size())
         self.settings.sync()
         return
 
@@ -149,9 +152,9 @@ class Application(QMainWindow):
         """Change interface style."""
 
         if style == 'default':
-            	self.setStyleSheet("")
+            self.setStyleSheet("")
         else:
-            f = open(os.path.join(stylepath,'%s.qss' %style), 'r')
+            f = open(os.path.join(stylepath, '%s.qss' % style), 'r')
             self.style_data = f.read()
             f.close()
             self.setStyleSheet(self.style_data)
@@ -160,35 +163,35 @@ class Application(QMainWindow):
 
     def createToolBar(self):
 
-        items = {'new project': {'action': lambda: self.newProject(ask=True),'file':'document-new'},
-                 'open': {'action':self.openProject,'file':'document-open'},
-                 'save': {'action': lambda: self.saveProject(None),'file':'save'},
-                 'zoom out': {'action':self.zoomOut,'file':'zoom-out'},
-                 'zoom in': {'action':self.zoomIn,'file':'zoom-in'},
-                 'decrease columns': {'action': lambda: self.changeColumnWidths(.9),'file':'decrease-width'},
-                 'increase columns': {'action': lambda: self.changeColumnWidths(1.1),'file':'increase-width'},
-                 'add sheet': {'action': lambda: self.addSheet(name=None),'file':'add'},
-                 'add column': {'action': lambda: self._call('addColumn'),'file':'add-column'},
-                 #'lock': {'action':self.lockTable,'file':'lock'},
-                 'clean data': {'action':lambda: self._call('cleanData'),'file':'clean'},
-                 'table to text': {'action':lambda: self._call('showAsText'),'file':'tabletotext'},
-                 'table info': {'action':lambda: self._call('info'),'file':'tableinfo'},
-                 'plot gallery': {'action': self.showPlotGallery,'file':'plot-gallery'},
-                 'preferences': {'action':self.preferences,'file':'preferences-system'},
-                 'quit': {'action':self.fileQuit,'file':'application-exit'}
-                }
+        items = {'new project': {'action': lambda: self.newProject(ask=True), 'file': 'document-new'},
+                 'open': {'action': self.openProject, 'file': 'document-open'},
+                 'save': {'action': lambda: self.saveProject(None), 'file': 'save'},
+                 'zoom out': {'action': self.zoomOut, 'file': 'zoom-out'},
+                 'zoom in': {'action': self.zoomIn, 'file': 'zoom-in'},
+                 'decrease columns': {'action': lambda: self.changeColumnWidths(.9), 'file': 'decrease-width'},
+                 'increase columns': {'action': lambda: self.changeColumnWidths(1.1), 'file': 'increase-width'},
+                 'add sheet': {'action': lambda: self.addSheet(name=None), 'file': 'add'},
+                 'add column': {'action': lambda: self._call('addColumn'), 'file': 'add-column'},
+                 # 'lock': {'action':self.lockTable,'file':'lock'},
+                 'clean data': {'action': lambda: self._call('cleanData'), 'file': 'clean'},
+                 'table to text': {'action': lambda: self._call('showAsText'), 'file': 'tabletotext'},
+                 'table info': {'action': lambda: self._call('info'), 'file': 'tableinfo'},
+                 'plot gallery': {'action': self.showPlotGallery, 'file': 'plot-gallery'},
+                 'preferences': {'action': self.preferences, 'file': 'preferences-system'},
+                 'quit': {'action': self.fileQuit, 'file': 'application-exit'}
+                 }
 
         toolbar = QToolBar("Main Toolbar")
         self.addToolBar(toolbar)
         for i in items:
             if 'file' in items[i]:
-                iconfile = os.path.join(iconpath,items[i]['file']+'.png')
+                iconfile = os.path.join(iconpath, items[i]['file'] + '.png')
                 icon = QIcon(iconfile)
             else:
                 icon = QIcon.fromTheme(items[i]['icon'])
             btn = QAction(icon, i, self)
             btn.triggered.connect(items[i]['action'])
-            #btn.setCheckable(True)
+            # btn.setCheckable(True)
             toolbar.addAction(btn)
         return
 
@@ -196,53 +199,53 @@ class Application(QMainWindow):
         """Main menu"""
 
         self.file_menu = QMenu('&File', self)
-        icon = QIcon(os.path.join(iconpath,'document-new.png'))
+        icon = QIcon(os.path.join(iconpath, 'document-new.png'))
         self.file_menu.addAction(icon, '&New', lambda: self.newProject(ask=True),
-                QtCore.Qt.CTRL + QtCore.Qt.Key_N)
-        icon = QIcon(os.path.join(iconpath,'open.png'))
+                                 QtCore.Qt.CTRL + QtCore.Qt.Key_N)
+        icon = QIcon(os.path.join(iconpath, 'open.png'))
         self.file_menu.addAction(icon, '&Open', self.openProject,
-                QtCore.Qt.CTRL + QtCore.Qt.Key_O)
+                                 QtCore.Qt.CTRL + QtCore.Qt.Key_O)
         self.recent_files_menu = QMenu("Recent Projects",
-            self.file_menu)
+                                       self.file_menu)
         self.file_menu.addAction(self.recent_files_menu.menuAction())
-        icon = QIcon(os.path.join(iconpath,'save.png'))
+        icon = QIcon(os.path.join(iconpath, 'save.png'))
         self.file_menu.addAction(icon, '&Save', self.saveProject,
-                QtCore.Qt.CTRL + QtCore.Qt.Key_S)
+                                 QtCore.Qt.CTRL + QtCore.Qt.Key_S)
         self.file_menu.addAction('&Save As', self.saveAsProject)
         self.file_menu.addAction('Import File', self.importFile)
         self.file_menu.addAction('Import HDF5', self.importHDF)
         self.file_menu.addAction('Import URL', self.importURL)
         self.file_menu.addAction('Export As', self.exportAs)
-        icon = QIcon(os.path.join(iconpath,'application-exit.png'))
+        icon = QIcon(os.path.join(iconpath, 'application-exit.png'))
         self.file_menu.addAction(icon, '&Quit', self.fileQuit,
-                QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
+                                 QtCore.Qt.CTRL + QtCore.Qt.Key_Q)
         self.menuBar().addMenu(self.file_menu)
 
         self.edit_menu = QMenu('Edit', self)
         self.menuBar().addMenu(self.edit_menu)
         self.undo_item = self.edit_menu.addAction('Undo', self.undo,
-                QtCore.Qt.CTRL + QtCore.Qt.Key_Z)
-        #self.undo_item.setDisabled(True)
-        #self.edit_menu.addAction('&Run Last Action', self.runLastAction)
-        icon = QIcon(os.path.join(iconpath,'preferences-system.png'))
+                                                  QtCore.Qt.CTRL + QtCore.Qt.Key_Z)
+        # self.undo_item.setDisabled(True)
+        # self.edit_menu.addAction('&Run Last Action', self.runLastAction)
+        icon = QIcon(os.path.join(iconpath, 'preferences-system.png'))
         self.edit_menu.addAction(icon, '&Preferences', self.preferences)
 
         self.view_menu = QMenu('View', self)
         self.menuBar().addMenu(self.view_menu)
-        icon = QIcon(os.path.join(iconpath,'zoom-in.png'))
+        icon = QIcon(os.path.join(iconpath, 'zoom-in.png'))
         self.view_menu.addAction(icon, 'Zoom In', self.zoomIn,
-                QtCore.Qt.CTRL + QtCore.Qt.Key_Equal)
-        icon = QIcon(os.path.join(iconpath,'zoom-out.png'))
+                                 QtCore.Qt.CTRL + QtCore.Qt.Key_Equal)
+        icon = QIcon(os.path.join(iconpath, 'zoom-out.png'))
         self.view_menu.addAction(icon, 'Zoom Out', self.zoomOut,
-                QtCore.Qt.CTRL + QtCore.Qt.Key_Minus)
-        icon = QIcon(os.path.join(iconpath,'decrease-width.png'))
+                                 QtCore.Qt.CTRL + QtCore.Qt.Key_Minus)
+        icon = QIcon(os.path.join(iconpath, 'decrease-width.png'))
         self.view_menu.addAction(icon, 'Decrease Column Width', lambda: self.changeColumnWidths(.9))
-        icon = QIcon(os.path.join(iconpath,'increase-width.png'))
+        icon = QIcon(os.path.join(iconpath, 'increase-width.png'))
         self.view_menu.addAction(icon, 'Increase Column Width', self.changeColumnWidths)
-        icon = QIcon(os.path.join(iconpath,'preferences-system.png'))
+        icon = QIcon(os.path.join(iconpath, 'preferences-system.png'))
         self.view_menu.addAction(icon, 'Show Plot Options', self.showPlotOptions)
 
-        self.style_menu = QMenu("Styles",  self.view_menu)
+        self.style_menu = QMenu("Styles", self.view_menu)
         self.style_menu.addAction('Default', self.setStyle)
         self.style_menu.addAction('Light', lambda: self.setStyle('light'))
         self.style_menu.addAction('Dark', lambda: self.setStyle('dark'))
@@ -250,27 +253,27 @@ class Application(QMainWindow):
 
         self.sheet_menu = QMenu('Sheet', self)
         self.menuBar().addMenu(self.sheet_menu)
-        icon = QIcon(os.path.join(iconpath,'add.png'))
+        icon = QIcon(os.path.join(iconpath, 'add.png'))
         self.sheet_menu.addAction(icon, 'Add', self.addSheet)
         self.sheet_menu.addAction('Rename', self.renameSheet)
-        icon = QIcon(os.path.join(iconpath,'copy.png'))
+        icon = QIcon(os.path.join(iconpath, 'copy.png'))
         self.sheet_menu.addAction(icon, '&Copy', self.copySheet)
 
         self.tools_menu = QMenu('Tools', self)
-        icon = QIcon(os.path.join(iconpath,'tableinfo.png'))
+        icon = QIcon(os.path.join(iconpath, 'tableinfo.png'))
         self.tools_menu.addAction(icon, '&Table Info', lambda: self._call('info'),
-                QtCore.Qt.CTRL + QtCore.Qt.Key_I)
-        icon = QIcon(os.path.join(iconpath,'clean.png'))
+                                  QtCore.Qt.CTRL + QtCore.Qt.Key_I)
+        icon = QIcon(os.path.join(iconpath, 'clean.png'))
         self.tools_menu.addAction(icon, '&Clean Data', lambda: self._call('cleanData'))
-        icon = QIcon(os.path.join(iconpath,'table-duplicates.png'))
+        icon = QIcon(os.path.join(iconpath, 'table-duplicates.png'))
         self.tools_menu.addAction(icon, '&Find Duplicates', lambda: self._call('findDuplicates'))
         self.tools_menu.addAction('Convert Numeric', lambda: self._call('convertNumeric'))
         self.tools_menu.addAction('Convert Column Names', lambda: self._call('convertColumnNames'))
         self.tools_menu.addAction('Time Series Resample', lambda: self._call('resample'))
-        icon = QIcon(os.path.join(iconpath,'tabletotext.png'))
+        icon = QIcon(os.path.join(iconpath, 'tabletotext.png'))
         self.tools_menu.addAction(icon, '&Table to Text', lambda: self._call('showAsText'),
-                QtCore.Qt.CTRL + QtCore.Qt.Key_T)
-        icon = QIcon(os.path.join(iconpath,'interpreter.png'))
+                                  QtCore.Qt.CTRL + QtCore.Qt.Key_T)
+        icon = QIcon(os.path.join(iconpath, 'interpreter.png'))
         self.tools_menu.addAction(icon, 'Python Interpreter', self.interpreter)
         self.menuBar().addMenu(self.tools_menu)
 
@@ -288,15 +291,15 @@ class Application(QMainWindow):
 
         self.plugin_menu = QMenu('Plugins', self)
         self.menuBar().addMenu(self.plugin_menu)
-        #self.plugin_menu.addAction('&Store Plot', lambda: self.storePlot())
+        # self.plugin_menu.addAction('&Store Plot', lambda: self.storePlot())
 
         self.help_menu = QMenu('&Help', self)
         self.menuBar().addSeparator()
         self.menuBar().addMenu(self.help_menu)
-        icon = QIcon(os.path.join(iconpath,'logo.png'))
+        icon = QIcon(os.path.join(iconpath, 'logo.png'))
         self.help_menu.addAction(icon, '&About', self.about)
 
-        #plot shortcut
+        # plot shortcut
         self.plotshc = QShortcut(QKeySequence('Ctrl+P'), self)
         self.plotshc.activated.connect(self.replot)
         return
@@ -311,7 +314,7 @@ class Application(QMainWindow):
     def _check_snap(self):
 
         if os.environ.has_key('SNAP_USER_COMMON'):
-            print ('running inside snap')
+            print('running inside snap')
             return True
         return False
 
@@ -320,8 +323,8 @@ class Application(QMainWindow):
         filtered copies"""
 
         for s in self.sheets:
-            t=self.sheets[s]
-            if t.filtered==True:
+            t = self.sheets[s]
+            if t.filtered == True:
                 t.showAll()
         return
 
@@ -356,8 +359,8 @@ class Application(QMainWindow):
 
         if ask == True:
             reply = QMessageBox.question(self, 'Are you sure?',
-                                 'Save current project?',
-                                 QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+                                         'Save current project?',
+                                         QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
             if reply == QMessageBox.Yes:
                 self.saveProject()
             elif reply == QMessageBox.Cancel:
@@ -371,13 +374,13 @@ class Application(QMainWindow):
         self.plots = {}
         if data != None:
             for s in data.keys():
-                if s in ['meta','plots']:
+                if s in ['meta', 'plots']:
                     continue
                 df = data[s]['table']
                 if 'meta' in data[s]:
                     meta = data[s]['meta']
                 else:
-                    meta=None
+                    meta = None
                 self.addSheet(s, df, meta)
             if 'plots' in data:
                 self.plots = data['plots']
@@ -393,7 +396,7 @@ class Application(QMainWindow):
     def openProject(self, filename=None, asksave=False):
         """Open project file"""
 
-        w=True
+        w = True
         if asksave == True:
             w = self.closeProject()
         if w == None:
@@ -401,24 +404,24 @@ class Application(QMainWindow):
 
         if filename == None:
             options = QFileDialog.Options()
-            filename, _ = QFileDialog.getOpenFileName(self,"Open Project",
-                                  homepath,"tablexplore Files (*.txpl);;All files (*.*)",
-                                  options=options)
+            filename, _ = QFileDialog.getOpenFileName(self, "Open Project",
+                                                      homepath, "tablexplore Files (*.txpl);;All files (*.*)",
+                                                      options=options)
 
         if not filename:
             return
         if not os.path.exists(filename):
-            print ('no such file')
-            #self.removeRecent(filename)
+            print('no such file')
+            # self.removeRecent(filename)
             return
         ext = os.path.splitext(filename)[1]
         if ext != '.txpl':
-            print ('does not appear to be a project file')
+            print('does not appear to be a project file')
             return
         if os.path.isfile(filename):
             data = pickle.load(gzip.GzipFile(filename, 'r'))
         else:
-            print ('no such file')
+            print('no such file')
             self.quit()
             return
         self.newProject(data)
@@ -434,8 +437,8 @@ class Application(QMainWindow):
         """Save as a new project filename"""
 
         options = QFileDialog.Options()
-        filename, _ = QFileDialog.getSaveFileName(self,"Save Project",
-                                                  homepath,"tablexplore Files (*.txpl);;All files (*.*)",
+        filename, _ = QFileDialog.getSaveFileName(self, "Save Project",
+                                                  homepath, "tablexplore Files (*.txpl);;All files (*.*)",
                                                   options=options)
         if not filename:
             return
@@ -462,31 +465,33 @@ class Application(QMainWindow):
         if not os.path.splitext(filename)[1] == '.txpl':
             self.filename += '.txpl'
         self.defaultsavedir = os.path.dirname(os.path.abspath(filename))
-        #self.do_saveProject(self.filename)
+        # self.do_saveProject(self.filename)
         self.saveWithProgress(self.filename)
         return
 
     def saveWithProgress(self, filename):
         """Save with progress bar"""
 
-        self.savedlg = dlg = ProgressWidget(label='Saving to %s' %filename)
+        self.savedlg = dlg = ProgressWidget(label='Saving to %s' % filename)
         dlg.show()
+
         def func(progress_callback):
             self.do_saveProject(self.filename)
+
         self.run_threaded_process(func, self.processing_completed)
         return
 
     def run_threaded_process(self, process, on_complete):
         """Execute a function in the background with a worker"""
 
-        #if self.running == True:
+        # if self.running == True:
         #    return
         worker = Worker(fn=process)
         self.threadpool.start(worker)
         worker.signals.finished.connect(on_complete)
-        #worker.signals.progress.connect(self.progress_fn)
-        self.savedlg.progressbar.setRange(0,0)
-        #self.worker = worker
+        # worker.signals.progress.connect(self.progress_fn)
+        self.savedlg.progressbar.setRange(0, 0)
+        # self.worker = worker
         return
 
     def progress_fn(self, msg):
@@ -495,7 +500,7 @@ class Application(QMainWindow):
     def processing_completed(self):
         """Generic process completed"""
 
-        self.savedlg.progressbar.setRange(0,1)
+        self.savedlg.progressbar.setRange(0, 1)
         self.savedlg.close()
         self.running = False
         return
@@ -505,12 +510,12 @@ class Application(QMainWindow):
            and meta data as dict to compressed pickle.
         """
 
-        data={}
+        data = {}
         for i in self.sheets:
             tablewidget = self.sheets[i]
             table = tablewidget.table
             data[i] = {}
-            #save dataframe with current column order
+            # save dataframe with current column order
             if table.filtered == True:
                 df = table.dataframe
             else:
@@ -531,18 +536,18 @@ class Application(QMainWindow):
         pf = tablewidget.pf
         pf.applyPlotoptions()
         table = tablewidget.table
-        #save plot options
+        # save plot options
         meta['generalopts'] = pf.generalopts.kwds
-        #meta['mplopts3d'] = pf.mplopts3d.kwds
+        # meta['mplopts3d'] = pf.mplopts3d.kwds
         meta['labelopts'] = pf.labelopts.kwds
         meta['axesopts'] = pf.axesopts.kwds
 
-        #save table selections
+        # save table selections
         meta['table'] = util.getAttributes(table)
         meta['table']['column_widths'] = table.getColumnWidths()
         meta['plotviewer'] = util.getAttributes(pf)
-        #print (meta['plotviewer'])
-        #save child table if present
+        # print (meta['plotviewer'])
+        # save child table if present
         if tablewidget.subtable != None:
             meta['subtable'] = tablewidget.subtable.table.model.df
         #    meta['childselected'] = util.getAttributes(table.child)
@@ -556,49 +561,49 @@ class Application(QMainWindow):
         tablesettings = meta['table']
         if 'subtable' in meta:
             subtable = meta['subtable']
-            #childsettings = meta['childselected']
+            # childsettings = meta['childselected']
         else:
             subtable = None
-        #load plot options
+        # load plot options
         opts = {'generalopts': table.pf.generalopts,
-                #'mplopts3d': table.pf.mplopts3d,
+                # 'mplopts3d': table.pf.mplopts3d,
                 'labelopts': table.pf.labelopts,
                 'axesopts': table.pf.axesopts,
                 }
         for m in opts:
             if m in meta and meta[m] is not None:
-                #util.setAttributes(opts[m], meta[m])
-                #print (m,meta[m])
+                # util.setAttributes(opts[m], meta[m])
+                # print (m,meta[m])
                 opts[m].updateWidgets(meta[m])
-                #check options loaded for missing values
-                #avoids breaking file saves when options changed
-                #defaults = plotting.get_defaults(m)
-                #for key in defaults:
+                # check options loaded for missing values
+                # avoids breaking file saves when options changed
+                # defaults = plotting.get_defaults(m)
+                # for key in defaults:
                 #    if key not in opts[m].opts:
                 #        opts[m].opts[key] = defaults[key]
 
-        #load table settings
+        # load table settings
         util.setAttributes(table.table, tablesettings)
         if 'column_widths' in tablesettings:
             table.table.setColumnWidths(tablesettings['column_widths'])
         table.refresh()
-        #load plotviewer
+        # load plotviewer
         if 'plotviewer' in meta:
-            #print (meta['plotviewer'])
+            # print (meta['plotviewer'])
             fig = meta['plotviewer']['fig']
             table.pf.setFigure(fig)
             table.pf.canvas.draw()
-            #util.setAttributes(table.pf, meta['plotviewer'])
-            #table.pf.updateWidgets()
+            # util.setAttributes(table.pf, meta['plotviewer'])
+            # table.pf.updateWidgets()
 
         if subtable is not None:
             table.showSubTable(df=subtable)
-            #util.setAttributes(table.child, childsettings)
+            # util.setAttributes(table.child, childsettings)
 
-        #redraw col selections
-        #if type(table.multiplecollist) is tuple:
+        # redraw col selections
+        # if type(table.multiplecollist) is tuple:
         #    table.multiplecollist = list(table.multiplecollist)
-        #table.drawMultipleCols()
+        # table.drawMultipleCols()
         return
 
     def importFile(self, filename=None):
@@ -631,9 +636,10 @@ class Application(QMainWindow):
 
         options = QFileDialog.Options()
         w = self.getCurrentTable()
-        filename, _ = QFileDialog.getSaveFileName(self,"Export",
-                             "","csv files (*.csv);;xlsx files (*.xlsx);;xls Files (*.xls);;hdf files (*.hdf5);;All Files (*)",
-                             options=options)
+        filename, _ = QFileDialog.getSaveFileName(self, "Export",
+                                                  "",
+                                                  "csv files (*.csv);;xlsx files (*.xlsx);;xls Files (*.xls);;hdf files (*.hdf5);;All Files (*)",
+                                                  options=options)
         df = w.table.model.df
         ext = os.path.splitext(filename)[1]
         if ext == '.csv':
@@ -648,27 +654,27 @@ class Application(QMainWindow):
         """Add a new sheet"""
 
         names = list(self.sheets.keys())
-        i=len(self.sheets)+1
+        i = len(self.sheets) + 1
         if name == None or name in names:
-            name = 'dataset'+str(i)
+            name = 'dataset' + str(i)
         if name in names:
             import random
-            name = 'dataset'+str(random.randint(i,100))
+            name = 'dataset' + str(random.randint(i, 100))
 
         sheet = QSplitter(self.main)
         idx = self.main.addTab(sheet, name)
-        #provide reference to self to dataframewidget
+        # provide reference to self to dataframewidget
         dfw = DataFrameWidget(sheet, dataframe=df, app=self,
-                                font=core.FONT, fontsize=core.FONTSIZE,
-                                columnwidth=core.COLUMNWIDTH, timeformat=core.TIMEFORMAT)
+                              font=core.FONT, fontsize=core.FONTSIZE,
+                              columnwidth=core.COLUMNWIDTH, timeformat=core.TIMEFORMAT)
         sheet.addWidget(dfw)
 
         self.sheets[name] = dfw
         self.currenttable = dfw
         pf = dfw.createPlotViewer(sheet)
         sheet.addWidget(pf)
-        sheet.setSizes((500,1000))
-        #reload attributes of table and plotter if present
+        sheet.setSizes((500, 1000))
+        # reload attributes of table and plotter if present
         if meta != None:
             self.loadMeta(dfw, meta)
         self.main.setCurrentIndex(idx)
@@ -679,7 +685,7 @@ class Application(QMainWindow):
 
         if ask == True:
             reply = QMessageBox.question(self, 'Delete this sheet?',
-                                 'Are you sure?', QMessageBox.Yes, QMessageBox.No)
+                                         'Are you sure?', QMessageBox.Yes, QMessageBox.No)
             if reply == QMessageBox.No:
                 return False
         name = self.main.tabText(index)
@@ -693,11 +699,11 @@ class Application(QMainWindow):
         index = self.main.currentIndex()
         name = self.main.tabText(index)
         new, ok = QInputDialog.getText(self, 'New name', 'Name:',
-                    QLineEdit.Normal, name)
+                                       QLineEdit.Normal, name)
         if ok:
             if new in self.sheets:
                 QMessageBox.information(self, "Cannot rename",
-                                    "Sheet name already present")
+                                        "Sheet name already present")
                 return
             self.sheets[new] = self.sheets[name]
             del self.sheets[name]
@@ -711,7 +717,7 @@ class Application(QMainWindow):
         name = self.main.tabText(index)
         df = self.sheets[name].table.model.df
         new, ok = QInputDialog.getText(self, 'New name', 'Name:',
-                    QLineEdit.Normal, name+'_copy')
+                                       QLineEdit.Normal, name + '_copy')
         if ok:
             self.addSheet(new, df)
         return
@@ -731,10 +737,10 @@ class Application(QMainWindow):
             select: set new sheet as selected
         """
 
-        if hasattr(self,'sheets'):
+        if hasattr(self, 'sheets'):
             self.addSheet(sheetname=name, df=df, select=select)
         else:
-            data = {name:{'table':df}}
+            data = {name: {'table': df}}
             self.newProject(data)
         return
 
@@ -753,8 +759,8 @@ class Application(QMainWindow):
         """Close event"""
 
         reply = QMessageBox.question(self, 'Close',
-                                 'Save current project?',
-                                  QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+                                     'Save current project?',
+                                     QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
         if reply == QMessageBox.Cancel:
             event.ignore()
             return
@@ -764,7 +770,7 @@ class Application(QMainWindow):
         for s in self.sheets:
             self.sheets[s].close()
         self.saveSettings()
-        if hasattr(self,'plotgallery'):
+        if hasattr(self, 'plotgallery'):
             self.plotgallery.close()
         self.threadpool.waitForDone()
         self.fileQuit()
@@ -780,10 +786,10 @@ class Application(QMainWindow):
             sheetname = name + '-' + str(i)
         if name == 'sample':
             if rows is None:
-                opts = {'rows':{'type':'spinbox','default':10,'range':(1,1e7)},
-                        'cols':{'type':'spinbox','default':5,'range':(1,26)}}
+                opts = {'rows': {'type': 'spinbox', 'default': 10, 'range': (1, 1e7)},
+                        'cols': {'type': 'spinbox', 'default': 5, 'range': (1, 26)}}
                 dlg = dialogs.MultipleInputDialog(self, opts, title='Sample data',
-                                    width=250,height=150)
+                                                  width=250, height=150)
                 dlg.exec_()
                 if not dlg.accepted:
                     return
@@ -791,12 +797,12 @@ class Application(QMainWindow):
                 rows = kwds['rows']
                 cols = kwds['cols']
             if ok:
-                df = data.getSampleData(rows,cols)
+                df = data.getSampleData(rows, cols)
             else:
                 return
         else:
             df = data.getPresetData(name)
-        self.addSheet(sheetname,df)
+        self.addSheet(sheetname, df)
         return
 
     def getCurrentTable(self):
@@ -858,12 +864,12 @@ class Application(QMainWindow):
         w = self.getCurrentTable()
         index = self.main.currentIndex()
         name = self.main.tabText(index)
-        #get the current figure and make a copy of it by using pickle
+        # get the current figure and make a copy of it by using pickle
         fig = w.pf.fig
         p = pickle.dumps(fig)
         fig = pickle.loads(p)
         t = time.strftime("%H:%M:%S")
-        label = name+'-'+t
+        label = name + '-' + t
         self.plots[label] = fig
         if hasattr(self, 'plotgallery'):
             self.plotgallery.update(self.plots)
@@ -915,11 +921,11 @@ class Application(QMainWindow):
             p = openplugins[plugin.name]
             p.main.show()
         else:
-            #plugin should be added to the splitter as a dock widget
-            #should also be able to add standalone windows
+            # plugin should be added to the splitter as a dock widget
+            # should also be able to add standalone windows
             try:
                 p = plugin(parent=self, table=tablew)
-                #track which plugin is running
+                # track which plugin is running
                 openplugins[plugin.name] = p
             except Exception as e:
                 QMessageBox.information(self, "Plugin error", str(e))
@@ -939,10 +945,12 @@ class Application(QMainWindow):
 
             def func(p, **kwargs):
                 def new():
-                   self.loadPlugin(p)
+                    self.loadPlugin(p)
+
                 return new
-            if hasattr(plg,'iconfile'):
-                icon = QIcon(os.path.join(pluginiconpath,plg.iconfile))
+
+            if hasattr(plg, 'iconfile'):
+                icon = QIcon(os.path.join(pluginiconpath, plg.iconfile))
                 plgmenu.addAction(icon, plg.menuentry, func(plg))
             else:
                 plgmenu.addAction(plg.menuentry, func(plg))
@@ -952,18 +960,18 @@ class Application(QMainWindow):
         """Preferences dialog"""
 
         from . import dialogs
-        opts = {'font':core.FONT, 'fontsize':core.FONTSIZE,
-                'columnwidth':core.COLUMNWIDTH, 'timeformat':core.TIMEFORMAT}
+        opts = {'font': core.FONT, 'fontsize': core.FONTSIZE,
+                'columnwidth': core.COLUMNWIDTH, 'timeformat': core.TIMEFORMAT}
         dlg = dialogs.PreferencesDialog(self, opts)
         dlg.exec_()
         return
 
-    def online_documentation(self,event=None):
+    def online_documentation(self, event=None):
         """Open the online documentation"""
 
         import webbrowser
-        link='https://github.com/dmnfarrell/tablexplore'
-        webbrowser.open(link,autoraise=1)
+        link = 'https://github.com/dmnfarrell/tablexplore'
+        webbrowser.open(link, autoraise=1)
         return
 
     def about(self):
@@ -975,25 +983,26 @@ class Application(QMainWindow):
         mplver = matplotlib.__version__
         if 'PySide2' in sys.modules:
             import PySide2
-            qtver = 'PySide2='+PySide2.QtCore.__version__
+            qtver = 'PySide2=' + PySide2.QtCore.__version__
         else:
             import PyQt5
-            qtver = 'PyQt5='+ PyQt5.QtCore.QT_VERSION_STR
+            qtver = 'PyQt5=' + PyQt5.QtCore.QT_VERSION_STR
 
-        text='Tablexplore Application\n'\
-                +'Version '+__version__+'\n'\
-                +'Copyright (C) Damien Farrell 2018-\n'\
-                +'This program is free software; you can redistribute it and/or\n'\
-                +'modify it under the terms of the GNU General Public License '\
-                +'as published by the Free Software Foundation; either version 3 '\
-                +'of the License, or (at your option) any later version.\n'\
-                +'Using Python v%s, %s\n' %(pythonver, qtver)\
-                +'pandas v%s, matplotlib v%s' %(pandasver,mplver)
+        text = 'Tablexplore Application\n' \
+               + 'Version ' + __version__ + '\n' \
+               + 'Copyright (C) Damien Farrell 2018-\n' \
+               + 'This program is free software; you can redistribute it and/or\n' \
+               + 'modify it under the terms of the GNU General Public License ' \
+               + 'as published by the Free Software Foundation; either version 3 ' \
+               + 'of the License, or (at your option) any later version.\n' \
+               + 'Using Python v%s, %s\n' % (pythonver, qtver) \
+               + 'pandas v%s, matplotlib v%s' % (pandasver, mplver)
 
         msg = QMessageBox.about(self, "About", text)
         return
 
-#https://www.learnpyqt.com/courses/concurrent-execution/multithreading-pyqt-applications-qthreadpool/
+
+# https://www.learnpyqt.com/courses/concurrent-execution/multithreading-pyqt-applications-qthreadpool/
 class Worker(QtCore.QRunnable):
     """Worker thread for running background tasks."""
 
@@ -1021,6 +1030,7 @@ class Worker(QtCore.QRunnable):
         finally:
             self.signals.finished.emit()
 
+
 class WorkerSignals(QtCore.QObject):
     """
     Defines the signals available from a running worker thread.
@@ -1037,20 +1047,21 @@ class WorkerSignals(QtCore.QObject):
     result = QtCore.Signal(object)
     progress = QtCore.Signal(str)
 
+
 def main():
     import sys, os
 
     from argparse import ArgumentParser
     parser = ArgumentParser()
-    #parser.add_argument("-f", "--file", dest="msgpack",
+    # parser.add_argument("-f", "--file", dest="msgpack",
     #                    help="Open a dataframe as msgpack", metavar="FILE")
     parser.add_argument("-p", "--project", dest="project_file",
                         help="Open a dataexplore project file", metavar="FILE")
     parser.add_argument("-i", "--csv", dest="csv_file",
                         help="Import a csv file", metavar="FILE")
-    #parser.add_argument("-x", "--excel", dest="excel",
+    # parser.add_argument("-x", "--excel", dest="excel",
     #                    help="Import an excel file", metavar="FILE")
-    #parser.add_argument("-t", "--test", dest="test",  action="store_true",
+    # parser.add_argument("-t", "--test", dest="test",  action="store_true",
     #                    default=False, help="Run a basic test app")
     args = vars(parser.parse_args())
 
@@ -1058,6 +1069,7 @@ def main():
     aw = Application(**args)
     aw.show()
     app.exec_()
+
 
 if __name__ == '__main__':
     main()

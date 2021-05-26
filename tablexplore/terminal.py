@@ -21,10 +21,12 @@
 
 import os, sys, platform
 import atexit
-if platform.system() in ['Linux','Darwin']:
+
+if platform.system() in ['Linux', 'Darwin']:
     import readline
 elif platform.system() == 'Windows':
     from pyreadline.rlmain import Readline
+
     readline = Readline()
 import rlcompleter
 from .qt import *
@@ -40,11 +42,12 @@ style = '''
     }
     '''
 
+
 class QueueReceiver(QtCore.QObject):
     sent = QtCore.Signal(str)
 
     def __init__(self, queue, *args, **kwargs):
-        QtCore.QObject.__init__(self,*args,**kwargs)
+        QtCore.QObject.__init__(self, *args, **kwargs)
         self.queue = queue
 
     @QtCore.Slot()
@@ -58,6 +61,7 @@ class ExecThread(QtCore.QObject):
     finished = QtCore.Signal()
     def_to_run = None
     cmd = None
+
     @QtCore.Slot()
     def run(self):
         try:
@@ -67,8 +71,8 @@ class ExecThread(QtCore.QObject):
             sys.excepthook(type, value, traceback)
         self.finished.emit()
 
-class Terminal(QPlainTextEdit):
 
+class Terminal(QPlainTextEdit):
     # signal to connect at the interpreter run code
     press_enter = QtCore.Signal(str)
 
@@ -81,7 +85,7 @@ class Terminal(QPlainTextEdit):
         """
         QPlainTextEdit.__init__(self, parent)
         self.setGeometry(50, 75, 600, 400)
-        #self.setWordWrapMode(QTextOption.WrapAnywhere)
+        # self.setWordWrapMode(QTextOption.WrapAnywhere)
         self.setUndoRedoEnabled(False)
         font = QFont("Monospace")
         font.setPointSize(10)
@@ -378,7 +382,7 @@ class Terminal(QPlainTextEdit):
             cmd = self.get_command()
             if bool(cmd and cmd.strip()):
                 self.write_autocomplete(cmd)
-            #else:
+            # else:
             #    self.write_prompt("    ")
             return
         super(Terminal, self).keyPressEvent(event)
