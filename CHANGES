@@ -1,0 +1,39 @@
+-----
+0.4.0
+-----
+
+* append tables
+* will use PyQt5 if PySide2 not present
+* plugin system
+* GIS plugin
+* fill option with add column
+
+-----
+0.3.0
+-----
+
+* 3D plots work
+* progress bar for saving
+* filtering tool
+* snap works
+* fixes to import dialog
+* can now set datetime display format
+* show memory usage in status bar
+
+-----
+0.2.0
+-----
+
+* manually set row and col layout in multiple subplots
+* can save zoom of tables and column widths
+* enabled using twin axes for line plots
+* selections use proper column order
+* now saves column order
+* date formatter
+* remembers recent files
+* saves previous urls for importing
+* added string operations
+* sort by index
+* sort by multiple columns
+* resample/transform
+* fixes to merge
