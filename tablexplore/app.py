@@ -74,7 +74,7 @@ class Application(QMainWindow):
 
         self.createMenu()
         self.main = QTabWidget(self)
-        self.main.setTabsClosable(True)
+        self.main.setTabsClosable(False)
         self.main.tabCloseRequested.connect(lambda index: self.removeSheet(index))
         screen_resolution = QGuiApplication.primaryScreen().availableGeometry()
         width, height = screen_resolution.width() * 0.7, screen_resolution.height() * .7
@@ -673,7 +673,7 @@ class Application(QMainWindow):
         self.currenttable = dfw
         pf = dfw.createPlotViewer(sheet)
         sheet.addWidget(pf)
-        sheet.setSizes((500, 1000))
+        sheet.setSizes((600, 400))
         # reload attributes of table and plotter if present
         if meta != None:
             self.loadMeta(dfw, meta)

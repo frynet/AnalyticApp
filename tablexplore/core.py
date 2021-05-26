@@ -1089,8 +1089,8 @@ class DataFrameTable(QTableView):
     QTableView with pandas DataFrame as model.
     """
 
-    def __init__(self, parent=None, dataframe=None, font='Arial',
-                 fontsize=12, columnwidth=80, timeformat='%m-%d-%Y', **kwargs):
+    def __init__(self, parent=None, dataframe=None, font=FONT,
+                 fontsize=FONTSIZE, columnwidth=COLUMNWIDTH, timeformat=TIMEFORMAT, **kwargs):
 
         QTableView.__init__(self)
         self.parent = parent
@@ -1108,6 +1108,7 @@ class DataFrameTable(QTableView):
         vh.setVisible(True)
         vh.setDefaultSectionSize(30)
         vh.setMinimumWidth(50)
+        vh.setSectionResizeMode(QHeaderView.ResizeToContents)
         vh.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
         vh.customContextMenuRequested.connect(self.rowHeaderMenu)
         # vh.sectionClicked.connect(self.rowClicked)
@@ -1118,6 +1119,7 @@ class DataFrameTable(QTableView):
         # hh.setSectionResizeMode(QHeaderView.Interactive)
         hh.setDefaultSectionSize(columnwidth)
         hh.setSelectionBehavior(QTableView.SelectColumns)
+        hh.setSectionResizeMode(QHeaderView.ResizeToContents)
         hh.setSectionsMovable(True)
         hh.setSelectionMode(QAbstractItemView.ExtendedSelection)
         hh.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
