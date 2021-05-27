@@ -101,7 +101,7 @@ class Application(QMainWindow):
         self.sheets = OrderedDict()
 
         # open dataframe and load it into the tab
-        df = pd.read_excel(os.getcwd() + '/sorted.xlsx')
+        df = pd.read_excel(os.getcwd() + '/lake1.xlsx')
         self.addSheet(df=df)
 
         self.threadpool = QtCore.QThreadPool()
