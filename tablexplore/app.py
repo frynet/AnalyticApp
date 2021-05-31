@@ -79,7 +79,7 @@ class Application(QMainWindow):
         screen_resolution = QGuiApplication.primaryScreen().availableGeometry()
         width, height = screen_resolution.width() * 0.7, screen_resolution.height() * .7
         self.setGeometry(QtCore.QRect(200, 200, width, height))
-        self.setMinimumSize(400, 300)
+        self.setMinimumSize(800, 600)
 
         self.main.setFocus()
         self.setCentralWidget(self.main)
