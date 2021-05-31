@@ -72,7 +72,7 @@ class Application(QMainWindow):
         self.setWindowTitle("Анализ Озёр")
         self.setWindowIcon(QIcon(os.path.join(module_path, 'logo.png')))
 
-        self.createMenu()
+        # self.createMenu()
         self.main = QTabWidget(self)
         self.main.setTabsClosable(False)
         self.main.tabCloseRequested.connect(lambda index: self.removeSheet(index))
@@ -105,7 +105,7 @@ class Application(QMainWindow):
         self.addSheet(df=df)
 
         self.threadpool = QtCore.QThreadPool()
-        self.discoverPlugins()
+        # self.discoverPlugins()
         return
 
     def loadSettings(self):
