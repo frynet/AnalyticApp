@@ -23,27 +23,10 @@
 from tablexplore import app
 from tablexplore.qt import *
 
-
-def main():
-    from argparse import ArgumentParser
-    parser = ArgumentParser()
-    # parser.add_argument("-f", "--file", dest="msgpack",
-    #                    help="Open a dataframe as msgpack", metavar="FILE")
-    parser.add_argument("-p", "--project", dest="project_file",
-                        help="Open a dataexplore project file", metavar="FILE")
-    parser.add_argument("-i", "--csv", dest="csv_file",
-                        help="Import a csv file", metavar="FILE")
-    # parser.add_argument("-x", "--excel", dest="excel",
-    #                    help="Import an excel file", metavar="FILE")
-    # parser.add_argument("-t", "--test", dest="test",  action="store_true",
-    #                    default=False, help="Run a basic test app")
-    args, unknown = parser.parse_known_args()
-    args = vars(args)
-    qapp = QApplication(sys.argv)
-    aw = app.Application(**args)
-    aw.show()
-    qapp.exec_()
-
-
 if __name__ == '__main__':
-    main()
+    qt_app = QApplication(sys.argv)
+
+    aw = app.Application()
+    aw.show()
+
+    sys.exit(qt_app.exec_())

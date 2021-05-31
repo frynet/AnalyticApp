@@ -65,7 +65,7 @@ class ProgressWidget(QDialog):
 
 
 class Application(QMainWindow):
-    def __init__(self, project_file=None, csv_file=None):
+    def __init__(self):
 
         QMainWindow.__init__(self)
         self.setAttribute(QtCore.Qt.WA_DeleteOnClose)
