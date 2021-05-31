@@ -20,27 +20,22 @@
     Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
 """
 
-try:
-    from PySide2.QtWidgets import *
-except:
-    from PyQt5.QtWidgets import *
-
 from tablexplore import app
+from tablexplore.qt import *
+
 
 def main():
-    import sys, os
-
     from argparse import ArgumentParser
     parser = ArgumentParser()
-    #parser.add_argument("-f", "--file", dest="msgpack",
+    # parser.add_argument("-f", "--file", dest="msgpack",
     #                    help="Open a dataframe as msgpack", metavar="FILE")
     parser.add_argument("-p", "--project", dest="project_file",
                         help="Open a dataexplore project file", metavar="FILE")
     parser.add_argument("-i", "--csv", dest="csv_file",
                         help="Import a csv file", metavar="FILE")
-    #parser.add_argument("-x", "--excel", dest="excel",
+    # parser.add_argument("-x", "--excel", dest="excel",
     #                    help="Import an excel file", metavar="FILE")
-    #parser.add_argument("-t", "--test", dest="test",  action="store_true",
+    # parser.add_argument("-t", "--test", dest="test",  action="store_true",
     #                    default=False, help="Run a basic test app")
     args, unknown = parser.parse_known_args()
     args = vars(args)
@@ -48,6 +43,7 @@ def main():
     aw = app.Application(**args)
     aw.show()
     qapp.exec_()
+
 
 if __name__ == '__main__':
     main()
