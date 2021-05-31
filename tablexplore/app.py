@@ -170,6 +170,8 @@ class Application(QMainWindow):
                  }
 
         toolbar = QToolBar("Main Toolbar")
+        toolbar.setFloatable(False)
+        toolbar.setMovable(False)
         self.addToolBar(toolbar)
         for i in items:
             if 'file' in items[i]:
