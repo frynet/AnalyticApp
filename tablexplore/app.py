@@ -162,22 +162,11 @@ class Application(QMainWindow):
 
     def createToolBar(self):
 
-        items = {'new project': {'action': lambda: self.newProject(ask=True), 'file': 'document-new'},
-                 'open': {'action': self.openProject, 'file': 'document-open'},
-                 'save': {'action': lambda: self.saveProject(None), 'file': 'save'},
+        items = {'save': {'action': lambda: self.saveProject(None), 'file': 'save'},
                  'zoom out': {'action': self.zoomOut, 'file': 'zoom-out'},
                  'zoom in': {'action': self.zoomIn, 'file': 'zoom-in'},
-                 'decrease columns': {'action': lambda: self.changeColumnWidths(.9), 'file': 'decrease-width'},
-                 'increase columns': {'action': lambda: self.changeColumnWidths(1.1), 'file': 'increase-width'},
-                 'add sheet': {'action': lambda: self.addSheet(name=None), 'file': 'add'},
-                 'add column': {'action': lambda: self._call('addColumn'), 'file': 'add-column'},
-                 # 'lock': {'action':self.lockTable,'file':'lock'},
-                 'clean data': {'action': lambda: self._call('cleanData'), 'file': 'clean'},
-                 'table to text': {'action': lambda: self._call('showAsText'), 'file': 'tabletotext'},
                  'table info': {'action': lambda: self._call('info'), 'file': 'tableinfo'},
-                 'plot gallery': {'action': self.showPlotGallery, 'file': 'plot-gallery'},
-                 'preferences': {'action': self.preferences, 'file': 'preferences-system'},
-                 'quit': {'action': self.fileQuit, 'file': 'application-exit'}
+                 'plot gallery': {'action': self.showPlotGallery, 'file': 'plot-gallery'}
                  }
 
         toolbar = QToolBar("Main Toolbar")
