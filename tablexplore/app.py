@@ -64,6 +64,14 @@ class ProgressWidget(QDialog):
         return
 
 
+class ToolBar(QToolBar):
+    def __init__(self, *args):
+        super(ToolBar, self).__init__(*args)
+
+    def contextMenuEvent(self, *args, **kwargs):
+        pass
+
+
 class Application(QMainWindow):
     def __init__(self):
 
@@ -169,7 +177,7 @@ class Application(QMainWindow):
                  'plot gallery': {'action': self.showPlotGallery, 'file': 'plot-gallery'}
                  }
 
-        toolbar = QToolBar("Main Toolbar")
+        toolbar = ToolBar("Main Toolbar")
         toolbar.setFloatable(False)
         toolbar.setMovable(False)
         self.addToolBar(toolbar)
