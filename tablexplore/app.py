@@ -168,7 +168,8 @@ class Application(QMainWindow):
 
     def createToolBar(self):
 
-        items = {'zoom out': {'action': self.zoomOut, 'file': 'zoom-out'},
+        items = {'save': {'action': lambda: self.saveLake(), 'file': 'save'},
+                 'zoom out': {'action': self.zoomOut, 'file': 'zoom-out'},
                  'zoom in': {'action': self.zoomIn, 'file': 'zoom-in'},
                  'table info': {'action': lambda: self._call('info'), 'file': 'tableinfo'},
                  'plot gallery': {'action': self.showPlotGallery, 'file': 'plot-gallery'}
