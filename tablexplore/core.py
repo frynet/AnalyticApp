@@ -91,7 +91,6 @@ class DataFrameWidget(QWidget):
         l.addWidget(self.splitter, 1, 1)
         self.table = DataFrameTable(self, dataframe, **kwargs)
         self.splitter.addWidget(self.table)
-        self.splitter.setSizes((500, 200))
         self.statusBar()
         self.pf = None
         self.app = app
