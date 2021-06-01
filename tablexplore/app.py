@@ -83,7 +83,7 @@ class Application(QMainWindow):
 
         self.createMenu2()
         self.main = QTabWidget(self)
-        self.main.setTabsClosable(False)
+        self.main.setTabsClosable(True)
         self.main.tabCloseRequested.connect(lambda index: self.removeSheet(index))
         screen_resolution = QGuiApplication.primaryScreen().availableGeometry()
         width, height = screen_resolution.width() * 0.7, screen_resolution.height() * .7

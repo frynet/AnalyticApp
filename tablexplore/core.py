@@ -100,9 +100,7 @@ class DataFrameWidget(QWidget):
         self.subtable = None
         self.filterdock = None
         self.mode = 'default'
-        # self.table.model.dataChanged.connect(self.stateChanged)
-
-        self.setLayout(self.layout)
+        self.table.model.dataChanged.connect(self.stateChanged)
         return
 
     # @Slot('QModelIndex','QModelIndex','int')
@@ -1108,7 +1106,7 @@ class DataFrameTable(QTableView):
         vh.setMinimumWidth(50)
         vh.setSectionResizeMode(QHeaderView.ResizeToContents)
         vh.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        # vh.customContextMenuRequested.connect(self.rowHeaderMenu)
+        vh.customContextMenuRequested.connect(self.rowHeaderMenu)
         # vh.sectionClicked.connect(self.rowClicked)
 
         hh = self.horizontalHeader()
@@ -1342,7 +1340,7 @@ class DataFrameTable(QTableView):
         menu.addAction(sortMenu.menuAction())
         # iconw = QIcon.fromTheme("open")
         # sortAction.setIcon(iconw)
-        # setIndexAction = menu.addAction("Set as Index")
+        setIndexAction = menu.addAction("Set as Index")
 
         colmenu = QMenu("Столбец", menu)
         deleteColumnAction = colmenu.addAction("Удалить")
@@ -1371,6 +1369,8 @@ class DataFrameTable(QTableView):
                 self.addColumn()
             elif action == setTypeAction:
                 self.setColumnType(column)
+            elif action == setIndexAction:
+                self.setIndex(column)
             elif action == datetimeAction:
                 self.parent.convertDates(column)
             elif action == stringOpAction:
@@ -1396,7 +1396,6 @@ class DataFrameTable(QTableView):
     def contextMenuEvent(self, event):
         """Reimplemented to create context menus for cells and empty space."""
 
-        return
         # Determine the logical indices of the cell where click occured
         hheader, vheader = self.horizontalHeader(), self.verticalHeader()
         position = event.globalPos()
@@ -1412,37 +1411,28 @@ class DataFrameTable(QTableView):
         # Show a context menu for empty space at bottom of table...
         menu = QMenu(self)
         copyAction = menu.addAction("Copy")
-        importAction = menu.addAction("Import File")
-        exportAction = menu.addAction("Export Table")
-        plotAction = menu.addAction("Plot Selected")
         rowsmenu = QMenu("Rows", menu)
         menu.addAction(rowsmenu.menuAction())
         deleteRowsAction = rowsmenu.addAction("Delete Rows")
         addRowsAction = rowsmenu.addAction("Add Rows")
-        modemenu = QMenu("Mode", menu)
-        menu.addAction(modemenu.menuAction())
-        modegroup = QActionGroup(self)
-        for i, mode in enumerate(MODES):
-            action = QAction(mode, self)
-            action = modemenu.addAction(mode)
-            action.setCheckable(True)
-            action.setData(i)
-            action.setActionGroup(modegroup)
-            if hasattr(self.parent, 'editMode'):
-                action.triggered.connect(self.parent.editMode)
-        modegroup.setExclusive(True)
+        # modemenu = QMenu("Mode", menu)
+        # menu.addAction(modemenu.menuAction())
+        # modegroup = QActionGroup(self)
+        # for i, mode in enumerate(MODES):
+        #     action = QAction(mode, self)
+        #     action = modemenu.addAction(mode)
+        #     action.setCheckable(True)
+        #     action.setData(i)
+        #     action.setActionGroup(modegroup)
+        #     if hasattr(self.parent, 'editMode'):
+        #         action.triggered.connect(self.parent.editMode)
+        # modegroup.setExclusive(True)
 
         memAction = menu.addAction("Memory Usage")
         action = menu.exec_(self.mapToGlobal(event.pos()))
 
         if action == copyAction:
             self.parent.copy()
-        elif action == importAction:
-            self.importFile()
-        elif action == exportAction:
-            self.parent.exportTable()
-        elif action == plotAction:
-            self.parent.plot()
         elif action == deleteRowsAction:
             self.deleteRows()
         elif action == addRowsAction:
