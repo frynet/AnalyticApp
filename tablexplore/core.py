@@ -1338,7 +1338,7 @@ class DataFrameTable(QTableView):
         sortAction = menu.addAction("Sort ")
         iconw = QIcon.fromTheme("open")
         sortAction.setIcon(iconw)
-        setIndexAction = menu.addAction("Set as Index")
+        # setIndexAction = menu.addAction("Set as Index")
 
         colmenu = QMenu("Column", menu)
         deleteColumnAction = colmenu.addAction("Delete Column")
@@ -1346,9 +1346,9 @@ class DataFrameTable(QTableView):
         addColumnAction = colmenu.addAction("Add Column")
         setTypeAction = colmenu.addAction("Set Data Type")
         menu.addAction(colmenu.menuAction())
-        fillAction = menu.addAction("Fill Data")
-        applyFunctionAction = menu.addAction("Apply Function")
-        transformResampleAction = menu.addAction("Transform/Resample")
+        # fillAction = menu.addAction("Fill Data")
+        # applyFunctionAction = menu.addAction("Apply Function")
+        # transformResampleAction = menu.addAction("Transform/Resample")
         stringOpAction = menu.addAction("String Operation")
         datetimeAction = menu.addAction("Date/Time Conversion")
 
@@ -1364,16 +1364,8 @@ class DataFrameTable(QTableView):
             self.addColumn()
         elif action == setTypeAction:
             self.setColumnType(column)
-        elif action == setIndexAction:
-            self.setIndex(column)
         elif action == datetimeAction:
             self.parent.convertDates(column)
-        elif action == fillAction:
-            self.parent.fillData(column)
-        elif action == applyFunctionAction:
-            self.parent.applyColumnFunction(column)
-        elif action == transformResampleAction:
-            self.parent.applyTransformFunction(column)
         elif action == stringOpAction:
             self.parent.applyStringMethod(column)
         return
