@@ -100,7 +100,7 @@ class DataFrameWidget(QWidget):
         self.subtable = None
         self.filterdock = None
         self.mode = 'default'
-        self.table.model.dataChanged.connect(self.stateChanged)
+        # self.table.model.dataChanged.connect(self.stateChanged)
 
         self.setLayout(self.layout)
         return
