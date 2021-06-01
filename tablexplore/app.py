@@ -107,11 +107,8 @@ class Application(QMainWindow):
 
         self.loadSettings()
 
+        self.currentLakeName = ''
         self.sheets = OrderedDict()
-
-        # open dataframe and load it into the tab
-        df = pd.read_excel(os.getcwd() + '/lake1.xlsx')
-        self.addSheet(df=df)
 
         self.threadpool = QtCore.QThreadPool()
         # self.discoverPlugins()
@@ -171,8 +168,7 @@ class Application(QMainWindow):
 
     def createToolBar(self):
 
-        items = {'save': {'action': lambda: self.saveProject(None), 'file': 'save'},
-                 'zoom out': {'action': self.zoomOut, 'file': 'zoom-out'},
+        items = {'zoom out': {'action': self.zoomOut, 'file': 'zoom-out'},
                  'zoom in': {'action': self.zoomIn, 'file': 'zoom-in'},
                  'table info': {'action': lambda: self._call('info'), 'file': 'tableinfo'},
                  'plot gallery': {'action': self.showPlotGallery, 'file': 'plot-gallery'}
@@ -314,7 +310,50 @@ class Application(QMainWindow):
         self.showExistLakes()
 
     def openLake(self, filename):
-        print(f'opening: {filename}')
+        try:
+            if len(self.sheets) > 0:
+                reply = QMessageBox.question(self, 'Закрыть текущее озеро',
+                                             'Сохранить изменения?',
+                                             QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
+                if reply == QMessageBox.Yes:
+                    self.saveLake()
+                    self.closeLake()
+                elif reply == QMessageBox.Cancel:
+                    return
+
+            self.currentLakeName = filename
+            excel_file = pd.ExcelFile(filename)
+
+            for name in excel_file.sheet_names:
+                df = pd.read_excel(excel_file, sheet_name=name)
+                self.addSheet(df=df, name=name)
+                print(list(df.columns))
+        except Exception as e:
+            error_dialog = QMessageBox()
+            error_dialog.setIcon(QMessageBox.Warning)
+            error_dialog.setWindowTitle("Возникла ошибка:")
+            error_dialog.setStandardButtons(QMessageBox.Ok)
+            error_dialog.setText(e.args[0])
+
+            error_dialog.show()
+            error_dialog.exec_()
+
+    def closeLake(self):
+        self.sheets.clear()
+        self.main.clear()
+
+    def saveLake(self):
+        """Сохранить изменения в таблице"""
+
+        if len(self.sheets) <= 0:
+            return
+
+        writer = pd.ExcelWriter(self.currentLakeName, engine='xlsxwriter')
+
+        for name, dfwidget in self.sheets.items():
+            dfwidget.table.model.df.to_excel(writer, sheet_name=name, index=False)
+
+        writer.save()
 
     def showExistLakes(self):
         """Populate exist lakes menu"""
@@ -322,7 +361,7 @@ class Application(QMainWindow):
         from functools import partial
 
         for name in os.listdir(LAKES_PATH):
-            self.exist_lakes.addAction(name, partial(self.openLake, name))
+            self.exist_lakes.addAction(name, partial(self.openLake, LAKES_PATH + name))
 
     def _call(self, func, **args):
         """Call a table function from it's string name"""
@@ -673,14 +712,6 @@ class Application(QMainWindow):
     def addSheet(self, name=None, df=None, meta=None):
         """Add a new sheet"""
 
-        names = list(self.sheets.keys())
-        i = len(self.sheets) + 1
-        if name == None or name in names:
-            name = 'dataset' + str(i)
-        if name in names:
-            import random
-            name = 'dataset' + str(random.randint(i, 100))
-
         sheet = QSplitter(self.main)
         idx = self.main.addTab(sheet, name)
         # provide reference to self to dataframewidget
@@ -776,14 +807,14 @@ class Application(QMainWindow):
     def closeEvent(self, event):
         """Close event"""
 
-        reply = QMessageBox.question(self, 'Close',
-                                     'Save current project?',
+        reply = QMessageBox.question(self, 'Выйти',
+                                     'Сохранить изменения?',
                                      QMessageBox.Yes | QMessageBox.No | QMessageBox.Cancel)
         if reply == QMessageBox.Cancel:
             event.ignore()
             return
         if reply == QMessageBox.Yes:
-            self.saveProject()
+            self.saveLake()
 
         for s in self.sheets:
             self.sheets[s].close()
