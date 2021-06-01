@@ -154,17 +154,16 @@ class PlotViewer(QWidget):
 
         self.dock = dock = QDockWidget('options', self)
         dock.setMaximumWidth(280)
-        dock.setMinimumWidth(220)
-        dock.setFeatures(QDockWidget.DockWidgetClosable)
-        scrollarea = QScrollArea(dock)
-        scrollarea.setWidgetResizable(True)
-        dock.setWidget(scrollarea)
-        toolsarea = QWidget()
-        toolsarea.setMinimumSize(180, 900)
-        scrollarea.setWidget(toolsarea)
+        dock.setMinimumWidth(250)
+        # scrollarea = QScrollArea()
+        # scrollarea.setWidgetResizable(True)
+        toolsarea = QWidget(dock)
+        # scrollarea.setWidget(toolsarea)
+        #toolsarea.setMinimumSize(180, 900)
+        dock.setWidget(toolsarea)
         hbox.addWidget(dock)
         ow = self.createDialogs(toolsarea)
-        dock.setWidget(ow)
+        # dock.setWidget(ow)
         return
 
     def setFigure(self, figure):
@@ -220,13 +219,13 @@ class PlotViewer(QWidget):
         l = QVBoxLayout(w)
         l.addWidget(dialog)
 
-        w = QWidget(tab)
-        idx = tab.addTab(w, 'axes')
+        # w = QWidget(tab)
+        # idx = tab.addTab(w, 'axes')
         self.axesopts = AxesOptions(parent=self)
         dialog = self.axesopts.showDialog(w, wrap=2, section_wrap=1, style=style)
-        dialog.resize(200, 200)
-        l = QVBoxLayout(w)
-        l.addWidget(dialog)
+        # dialog.resize(200, 200)
+        # l = QVBoxLayout(w)
+        # l.addWidget(dialog)
         return tab
 
     def createButtons(self, parent):
@@ -291,7 +290,7 @@ class PlotViewer(QWidget):
             val = 1.0
         self.generalopts.increment('linewidth', val)
         self.generalopts.increment('ms', val)
-        self.labelopts.increment('fontsize', val)
+        self.labelsopts.increment('fontsize', val)
         self.replot()
         return
 
@@ -1153,7 +1152,7 @@ class PlotViewer(QWidget):
         kwds = self.generalopts.kwds.copy()
         # use base options by joining the dicts
         # kwds.update(self.mplopts3d.kwds)
-        kwds.update(self.labelopts.kwds)
+        kwds.update(self.labelsopts.kwds)
         # print (kwds)
         data = self.data
         x = data.values[:, 0]
@@ -1394,8 +1393,8 @@ class MPLBaseOptions(BaseOptions):
     """Class to provide a dialog for matplotlib options and returning
         the selected prefs"""
 
-    kinds = ['line', 'scatter', 'bar', 'barh', 'pie', 'histogram', 'boxplot', 'violinplot', 'dotplot',
-             'heatmap', 'area', 'hexbin', 'contour', 'imshow', 'scatter_matrix', 'density', 'radviz', 'venn']
+    kinds = ['line', 'scatter', 'bar', 'pie', 'histogram', 'boxplot',
+             'heatmap', 'density']
     legendlocs = ['best', 'upper right', 'upper left', 'lower left', 'lower right', 'right', 'center left',
                   'center right', 'lower center', 'upper center', 'center']
 
@@ -1424,37 +1423,37 @@ class MPLBaseOptions(BaseOptions):
         self.groups = OrderedDict((key, grps[key]) for key in order)
         opts = self.opts = {
             'style': {'type': 'combobox', 'default': 'default', 'items': style_list},
-            'marker': {'type': 'combobox', 'default': '', 'items': markers},
+            'marker': {'type': 'none', 'default': '.', 'items': markers},
             'linestyle': {'type': 'combobox', 'default': '-', 'items': linestyles},
             'ms': {'type': 'slider', 'default': 5, 'range': (1, 80), 'interval': 1, 'label': 'marker size'},
-            'grid': {'type': 'checkbox', 'default': 0, 'label': 'show grid'},
-            'logx': {'type': 'checkbox', 'default': 0, 'label': 'log x'},
-            'logy': {'type': 'checkbox', 'default': 0, 'label': 'log y'},
+            'grid': {'type': 'none', 'default': 1, 'label': 'show grid'},
+            'logx': {'type': 'none', 'default': 0, 'label': 'log x'},
+            'logy': {'type': 'none', 'default': 0, 'label': 'log y'},
             'use_index': {'type': 'checkbox', 'default': 1, 'label': 'use index'},
-            'errorbars': {'type': 'checkbox', 'default': 0, 'label': 'errorbar column'},
-            'clrcol': {'type': 'combobox', 'items': datacols, 'label': 'color by value', 'default': ''},
-            'cscale': {'type': 'combobox', 'items': scales, 'label': 'color scale', 'default': 'linear'},
+            'errorbars': {'type': 'none', 'default': 0, 'label': 'errorbar column'},
+            'clrcol': {'type': 'none', 'items': datacols, 'label': 'color by value', 'default': ''},
+            'cscale': {'type': 'none', 'items': scales, 'label': 'color scale', 'default': 'linear'},
             'colorbar': {'type': 'checkbox', 'default': 0, 'label': 'show colorbar'},
-            'bw': {'type': 'checkbox', 'default': 0, 'label': 'black & white'},
-            'showxlabels': {'type': 'checkbox', 'default': 1, 'label': 'x tick labels'},
-            'showylabels': {'type': 'checkbox', 'default': 1, 'label': 'y tick labels'},
-            'sharex': {'type': 'checkbox', 'default': 0, 'label': 'share x'},
-            'sharey': {'type': 'checkbox', 'default': 0, 'label': 'share y'},
-            'legend': {'type': 'checkbox', 'default': 1, 'label': 'legend'},
+            'bw': {'type': 'none', 'default': 0, 'label': 'black & white'},
+            'showxlabels': {'type': 'none', 'default': 1, 'label': 'x tick labels'},
+            'showylabels': {'type': 'none', 'default': 1, 'label': 'y tick labels'},
+            'sharex': {'type': 'none', 'default': 0, 'label': 'share x'},
+            'sharey': {'type': 'none', 'default': 0, 'label': 'share y'},
+            'legend': {'type': 'none', 'default': 1, 'label': 'legend'},
             # 'loc':{'type':'combobox','default':'best','items':self.legendlocs,'label':'legend loc'},
             'kind': {'type': 'combobox', 'default': 'line', 'items': self.kinds, 'label': 'plot type'},
-            'stacked': {'type': 'checkbox', 'default': 0, 'label': 'stacked'},
-            'linewidth': {'type': 'slider', 'default': 2, 'range': (0, 10), 'interval': 1, 'label': 'line width'},
-            'alpha': {'type': 'spinbox', 'default': 9, 'range': (1, 10), 'interval': 1, 'label': 'alpha'},
+            'stacked': {'type': 'none', 'default': 0, 'label': 'stacked'},
+            'linewidth': {'type': 'none', 'default': 2, 'range': (0, 10), 'interval': 1, 'label': 'line width'},
+            'alpha': {'type': 'none', 'default': 9, 'range': (1, 10), 'interval': 1, 'label': 'alpha'},
             # 'subplots':{'type':'checkbox','default':0,'label':'multiple subplots'},
             'axes_layout': {'type': 'combobox', 'default': 'single', 'items': layouts, 'label': 'axes layout'},
             'colormap': {'type': 'combobox', 'default': 'Spectral', 'items': colormaps},
             'bins': {'type': 'spinbox', 'default': 20, 'width': 5},
-            'by': {'type': 'combobox', 'items': datacols, 'label': 'group by', 'default': ''},
-            'by2': {'type': 'combobox', 'items': datacols, 'label': 'group by 2', 'default': ''},
-            'labelcol': {'type': 'combobox', 'items': datacols, 'label': 'point labels', 'default': ''},
-            'pointsizes': {'type': 'combobox', 'items': datacols, 'label': 'point sizes', 'default': ''},
-            'dpi': {'type': 'spinbox', 'default': 100, 'width': 4, 'range': (10, 300)},
+            'by': {'type': 'none', 'items': datacols, 'label': 'group by', 'default': ''},
+            'by2': {'type': 'none', 'items': datacols, 'label': 'group by 2', 'default': ''},
+            'labelcol': {'type': 'none', 'items': datacols, 'label': 'point labels', 'default': ''},
+            'pointsizes': {'type': 'none', 'items': datacols, 'label': 'point sizes', 'default': ''},
+            'dpi': {'type': 'none', 'default': 100, 'width': 4, 'range': (10, 300)},
             '3D plot': {'type': 'checkbox', 'default': 0, 'label': '3D plot'}
         }
         self.kwds = {}
@@ -1509,11 +1508,11 @@ class AnnotationOptions(BaseOptions):
             'rotate': {'type': 'scale', 'default': 0, 'range': (-180, 180), 'interval': 1, 'label': 'rotate'},
             'boxstyle': {'type': 'combobox', 'default': 'square', 'items': bstyles},
             'text': {'type': 'scrolledtext', 'default': '', 'width': 20},
-            'align': {'type': 'combobox', 'default': 'center', 'items': alignments},
+            'align': {'type': 'none', 'default': 'center', 'items': alignments},
             'font': {'type': 'combobox', 'default': defaultfont, 'items': fonts},
             'fontsize': {'type': 'spinbox', 'default': 12, 'range': (4, 50), 'label': 'font size'},
-            'fontweight': {'type': 'combobox', 'default': 'normal', 'items': fontweights},
-            'rot': {'type': 'entry', 'default': 0, 'label': 'ticklabel angle'}
+            'fontweight': {'type': 'none', 'default': 'normal', 'items': fontweights},
+            'rot': {'type': 'none', 'default': 0, 'label': 'ticklabel angle'}
         }
         self.kwds = {}
         # used to store annotations

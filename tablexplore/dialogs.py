@@ -38,6 +38,14 @@ module_path = os.path.dirname(os.path.abspath(__file__))
 iconpath = os.path.join(module_path, 'icons')
 
 
+class PseudoWidget:
+    def __init__(self, val):
+        self.val = val
+
+    def value(self):
+        return self.val
+
+
 def dialogFromOptions(parent, opts, sections=None,
                       wrap=2, section_wrap=4,
                       style=None):
@@ -79,21 +87,25 @@ def dialogFromOptions(parent, opts, sections=None,
     for s in sections:
         row = srow
         col = 1
-        f = QWidget()
-        f.resize(50, 100)
-        f.sizeHint()
-        l.addWidget(f, row, scol)
-        gl = QGridLayout(f)
-        gl.setAlignment(QtCore.Qt.AlignTop)
-        gl.setSpacing(5)
+        if [1 for op in sections[s] if opts[op]["type"] != "none"]:
+            f = QWidget()
+
+            l.addWidget(f, row, scol)
+            gl = QGridLayout(f)
+            gl.setAlignment(QtCore.Qt.AlignTop)
+            gl.setSpacing(3)
+
         for o in sections[s]:
             label = o
-            val = None
             opt = opts[o]
-            if 'label' in opt:
-                label = opt['label']
             val = opt['default']
             t = opt['type']
+            if t == "none":
+                widgets[o] = PseudoWidget(val)
+                continue
+            if 'label' in opt:
+                label = opt['label']
+
             lbl = QLabel(label)
             gl.addWidget(lbl, row, col)
             lbl.setStyleSheet(style)
@@ -151,6 +163,8 @@ def dialogFromOptions(parent, opts, sections=None,
                 index = w.findText(val)
                 # w.resize(w.sizeHint())
                 w.setCurrentIndex(index)
+            else:
+                raise ValueError(f"{lbl} option has unavailable type '{t}'")
             col += 1
             gl.addWidget(w, row, col)
             w.setStyleSheet(style)
@@ -188,9 +202,7 @@ def getWidgetValues(widgets):
                 val = [i.text() for i in w.selectedItems()]
             elif type(w) is QCheckBox:
                 val = w.isChecked()
-            elif type(w) is QSlider:
-                val = w.value()
-            elif type(w) in [QSpinBox, QDoubleSpinBox]:
+            elif type(w) in [QSpinBox, QDoubleSpinBox, QSlider, PseudoWidget]:
                 val = w.value()
             if val != None:
                 kwds[i] = val
