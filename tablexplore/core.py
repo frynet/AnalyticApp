@@ -1395,6 +1395,7 @@ class DataFrameTable(QTableView):
     def contextMenuEvent(self, event):
         """Reimplemented to create context menus for cells and empty space."""
 
+        return
         # Determine the logical indices of the cell where click occured
         hheader, vheader = self.horizontalHeader(), self.verticalHeader()
         position = event.globalPos()
