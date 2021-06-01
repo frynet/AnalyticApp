@@ -1281,16 +1281,16 @@ class DataFrameTable(QTableView):
         hheader = self.horizontalHeader()
         self.selectColumn(col)
 
-    def sort(self, idx):
+    def sort(self, idx, ascending=True):
         """Sort by selected columns"""
 
         df = self.model.df
         sel = self.getSelectedColumns()
         if len(sel) > 1:
             for i in sel:
-                self.model.sort(i, order=QtCore.Qt.DescendingOrder)
+                self.model.sort(i, ascending=ascending)
         else:
-            self.model.sort(idx, order=QtCore.Qt.DescendingOrder)
+            self.model.sort(idx, ascending=ascending)
         return
 
     def deleteCells(self, rows, cols, answer=None):
@@ -1335,7 +1335,10 @@ class DataFrameTable(QTableView):
         # model = self.model
         menu = QMenu(self)
 
-        sortAction = menu.addAction("Сортировать")
+        sortMenu = QMenu("Сортировать по", menu)
+        sortAscending = sortMenu.addAction("Возрастанию")
+        sortDescending = sortMenu.addAction("Убыванию")
+        menu.addAction(sortMenu.menuAction())
         # iconw = QIcon.fromTheme("open")
         # sortAction.setIcon(iconw)
         # setIndexAction = menu.addAction("Set as Index")
@@ -1355,8 +1358,10 @@ class DataFrameTable(QTableView):
         # sortAction = menu.addAction("Sort By")
         action = menu.exec_(self.mapToGlobal(pos))
         try:
-            if action == sortAction:
+            if action == sortAscending:
                 self.sort(idx)
+            elif action == sortDescending:
+                self.sort(idx, ascending=False)
             elif action == deleteColumnAction:
                 self.deleteColumn(column)
             elif action == renameColumnAction:
@@ -1693,12 +1698,12 @@ class DataFrameModel(QtCore.QAbstractTableModel):
 
         return QtCore.Qt.ItemIsEnabled | QtCore.Qt.ItemIsSelectable | QtCore.Qt.ItemIsEditable
 
-    def sort(self, idx, order):
+    def sort(self, idx, ascending):
         """Sort table by given column number """
 
         self.layoutAboutToBeChanged.emit()
         col = self.df.columns[idx]
-        self.df = self.df.sort_values(col)
+        self.df = self.df.sort_values(col, ascending=ascending)
         self.layoutChanged.emit()
         return
 
