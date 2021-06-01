@@ -31,6 +31,7 @@ from .core import DataFrameModel, DataFrameTable, DataFrameWidget
 from .plotting import PlotViewer
 from . import util, data, core, dialogs
 
+LAKES_PATH = os.getcwd() + "/Озёра/"
 homepath = os.path.expanduser("~")
 module_path = os.path.dirname(os.path.abspath(__file__))
 stylepath = os.path.join(module_path, 'styles')
@@ -80,7 +81,7 @@ class Application(QMainWindow):
         self.setWindowTitle("Анализ Озёр")
         self.setWindowIcon(QIcon(os.path.join(module_path, 'logo.png')))
 
-        # self.createMenu()
+        self.createMenu2()
         self.main = QTabWidget(self)
         self.main.setTabsClosable(False)
         self.main.tabCloseRequested.connect(lambda index: self.removeSheet(index))
@@ -301,6 +302,27 @@ class Application(QMainWindow):
         self.plotshc = QShortcut(QKeySequence('Ctrl+P'), self)
         self.plotshc.activated.connect(self.replot)
         return
+
+    def createMenu2(self):
+        """Main menu"""
+
+        self.choose_data_menu = QMenu('Данные', self)
+        self.exist_lakes = QMenu("Выбрать озеро", self.choose_data_menu)
+        self.choose_data_menu.addAction(self.exist_lakes.menuAction())
+        self.menuBar().addMenu(self.choose_data_menu)
+
+        self.showExistLakes()
+
+    def openLake(self, filename):
+        print(f'opening: {filename}')
+
+    def showExistLakes(self):
+        """Populate exist lakes menu"""
+
+        from functools import partial
+
+        for name in os.listdir(LAKES_PATH):
+            self.exist_lakes.addAction(name, partial(self.openLake, name))
 
     def _call(self, func, **args):
         """Call a table function from it's string name"""
