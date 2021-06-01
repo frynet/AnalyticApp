@@ -134,6 +134,7 @@ class DataFrameWidget(QWidget):
             # 'copy': {'action': self.copy, 'file': 'copy', 'shortcut': 'Ctrl+C'},
             # 'paste': {'action': self.paste, 'file': 'paste', 'shortcut': 'Ctrl+V'},
             # 'insert': {'action': self.insert, 'file': 'table-insert'},
+            'add': {'action': self.table.addRow, 'file': 'add'},
             'plot': {'action': self.plot, 'file': 'plot'}
             # 'transpose': {'action': self.transpose, 'file': 'transpose'},
             # 'aggregate': {'action': self.aggregate, 'file': 'aggregate'},
@@ -1491,6 +1492,39 @@ class DataFrameTable(QTableView):
             df[name] = pd.Series()
         self.refresh()
         return
+
+    def addRow(self):
+        """Add a row"""
+
+        try:
+            opts = dict()
+
+            for name in self.model.df.columns:
+                opts[name] = {'label': name, 'type': 'entry', 'default': ''}
+
+            dlg = dialogs.MultipleInputDialog(self, opts, title='Добавить наблюдение', width=400, height=150)
+            dlg.exec_()
+
+            if not dlg.accepted:
+                return False
+
+            df = self.model.df
+            new_row = dict()
+            for key, value in dlg.values.items():
+                new_row[key] = value
+
+            df.append(new_row, ignore_index=True)
+
+            self.refresh()
+        except Exception as e:
+            error_dialog = QMessageBox()
+            error_dialog.setIcon(QMessageBox.Warning)
+            error_dialog.setWindowTitle("Возникла ошибка:")
+            error_dialog.setStandardButtons(QMessageBox.Ok)
+            error_dialog.setText(e.args[0])
+
+            error_dialog.show()
+            error_dialog.exec_()
 
     def deleteColumn(self, column=None):
 
