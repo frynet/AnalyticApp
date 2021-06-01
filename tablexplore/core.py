@@ -1107,7 +1107,7 @@ class DataFrameTable(QTableView):
         vh.setMinimumWidth(50)
         vh.setSectionResizeMode(QHeaderView.ResizeToContents)
         vh.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
-        vh.customContextMenuRequested.connect(self.rowHeaderMenu)
+        # vh.customContextMenuRequested.connect(self.rowHeaderMenu)
         # vh.sectionClicked.connect(self.rowClicked)
 
         hh = self.horizontalHeader()
