@@ -722,9 +722,9 @@ class Application(QMainWindow):
 
         self.sheets[name] = dfw
         self.currenttable = dfw
-        # pf = dfw.createPlotViewer(sheet)
-        # sheet.addWidget(pf)
-        # sheet.setSizes((500, 500))
+        pf = dfw.createPlotViewer(sheet)
+        sheet.addWidget(pf)
+        sheet.setSizes((500, 500))
         # reload attributes of table and plotter if present
 
         return

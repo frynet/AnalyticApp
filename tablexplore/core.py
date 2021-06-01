@@ -91,6 +91,7 @@ class DataFrameWidget(QWidget):
         l.addWidget(self.splitter, 1, 1)
         self.table = DataFrameTable(self, dataframe, **kwargs)
         self.splitter.addWidget(self.table)
+        self.createToolbar()
         self.statusBar()
         self.pf = None
         self.app = app
@@ -128,22 +129,22 @@ class DataFrameWidget(QWidget):
         """Create toolbar"""
 
         self.setLayout(self.layout)
-        items = {'load': {'action': self.load, 'file': 'open'},
-                 'importexcel': {'action': self.importExcel, 'file': 'excel'},
-                 'copy': {'action': self.copy, 'file': 'copy', 'shortcut': 'Ctrl+C'},
-                 'paste': {'action': self.paste, 'file': 'paste', 'shortcut': 'Ctrl+V'},
-                 'insert': {'action': self.insert, 'file': 'table-insert'},
-                 'plot': {'action': self.plot, 'file': 'plot'},
-                 'transpose': {'action': self.transpose, 'file': 'transpose'},
-                 'aggregate': {'action': self.aggregate, 'file': 'aggregate'},
-                 'pivot': {'action': self.pivot, 'file': 'pivot'},
-                 'melt': {'action': self.melt, 'file': 'melt'},
-                 'merge': {'action': self.merge, 'file': 'merge'},
-                 'filter': {'action': self.filter, 'file': 'table-filter'},
-                 'interpreter': {'action': self.showInterpreter, 'file': 'interpreter'},
-                 'subtable': {'action': self.subTableFromSelection, 'file': 'subtable'},
-                 'clear': {'action': self.clear, 'file': 'clear'},
-                 }
+        items = {  # 'load': {'action': self.load, 'file': 'open'},
+            # 'importexcel': {'action': self.importExcel, 'file': 'excel'},
+            # 'copy': {'action': self.copy, 'file': 'copy', 'shortcut': 'Ctrl+C'},
+            # 'paste': {'action': self.paste, 'file': 'paste', 'shortcut': 'Ctrl+V'},
+            # 'insert': {'action': self.insert, 'file': 'table-insert'},
+            'plot': {'action': self.plot, 'file': 'plot'}
+            # 'transpose': {'action': self.transpose, 'file': 'transpose'},
+            # 'aggregate': {'action': self.aggregate, 'file': 'aggregate'},
+            # 'pivot': {'action': self.pivot, 'file': 'pivot'},
+            # 'melt': {'action': self.melt, 'file': 'melt'},
+            # 'merge': {'action': self.merge, 'file': 'merge'},
+            # 'filter': {'action': self.filter, 'file': 'table-filter'},
+            # 'interpreter': {'action': self.showInterpreter, 'file': 'interpreter'},
+            # 'subtable': {'action': self.subTableFromSelection, 'file': 'subtable'},
+            # 'clear': {'action': self.clear, 'file': 'clear'},
+        }
 
         toolbar = QToolBar("Toolbar")
         toolbar.setOrientation(QtCore.Qt.Vertical)
