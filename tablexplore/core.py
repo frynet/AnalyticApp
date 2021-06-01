@@ -1116,7 +1116,7 @@ class DataFrameTable(QTableView):
         # hh.setSectionResizeMode(QHeaderView.Interactive)
         hh.setDefaultSectionSize(columnwidth)
         hh.setSelectionBehavior(QTableView.SelectColumns)
-        hh.setSectionResizeMode(QHeaderView.Stretch)
+        hh.setSectionResizeMode(QHeaderView.ResizeToContents)
         hh.setSectionsMovable(True)
         hh.setSelectionMode(QAbstractItemView.ExtendedSelection)
         hh.setContextMenuPolicy(QtCore.Qt.CustomContextMenu)
