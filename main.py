@@ -27,6 +27,6 @@ if __name__ == '__main__':
     qt_app = QApplication(sys.argv)
 
     aw = app.Application()
-    aw.show()
+    aw.showMaximized()
 
     sys.exit(qt_app.exec_())
