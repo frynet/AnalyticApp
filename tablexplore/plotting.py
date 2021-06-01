@@ -1409,7 +1409,7 @@ class MPLBaseOptions(BaseOptions):
         else:
             datacols = []
 
-        layouts = ['single', 'multiple', 'twin axes']
+        layouts = ['single', 'multiple']
         scales = ['linear', 'log']
         style_list = ['default', 'classic'] + sorted(
             style for style in plt.style.available if style != 'classic')

@@ -45,6 +45,9 @@ class PseudoWidget:
     def value(self):
         return self.val
 
+    def clear(self):
+        pass
+
 
 def dialogFromOptions(parent, opts, sections=None,
                       wrap=2, section_wrap=4,
