@@ -1354,20 +1354,29 @@ class DataFrameTable(QTableView):
 
         # sortAction = menu.addAction("Sort By")
         action = menu.exec_(self.mapToGlobal(pos))
-        if action == sortAction:
-            self.sort(idx)
-        elif action == deleteColumnAction:
-            self.deleteColumn(column)
-        elif action == renameColumnAction:
-            self.renameColumn(column)
-        elif action == addColumnAction:
-            self.addColumn()
-        elif action == setTypeAction:
-            self.setColumnType(column)
-        elif action == datetimeAction:
-            self.parent.convertDates(column)
-        elif action == stringOpAction:
-            self.parent.applyStringMethod(column)
+        try:
+            if action == sortAction:
+                self.sort(idx)
+            elif action == deleteColumnAction:
+                self.deleteColumn(column)
+            elif action == renameColumnAction:
+                self.renameColumn(column)
+            elif action == addColumnAction:
+                self.addColumn()
+            elif action == setTypeAction:
+                self.setColumnType(column)
+            elif action == datetimeAction:
+                self.parent.convertDates(column)
+            elif action == stringOpAction:
+                self.parent.applyStringMethod(column)
+        except Exception as e:
+            error_dialog = QMessageBox()
+            error_dialog.setIcon(QMessageBox.Warning)
+            error_dialog.setStandardButtons(QMessageBox.Ok)
+            error_dialog.setText(e.args[0])
+
+            error_dialog.show()
+            error_dialog.exec_()
         return
 
     def keyPressEvent(self, event):
