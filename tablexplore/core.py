@@ -766,12 +766,12 @@ class DataFrameWidget(QWidget):
         props = ['day', 'dayofweek', 'month', 'hour', 'minute', 'second', 'microsecond', 'year',
                  'dayofyear', 'weekofyear', 'quarter', 'days_in_month', 'is_leap_year']
         opts = {'format': {'type': 'combobox', 'default': 'int', 'editable': True,
-                           'items': timeformats, 'label': 'Conversion format'},
-                'errors': {'type': 'combobox', 'items': ['ignore', 'coerce'], 'default': 'ignore', 'label': 'Errors'},
+                           'items': timeformats, 'label': 'Формат конвертирования'},
+                'errors': {'type': 'combobox', 'items': ['ignore', 'coerce'], 'default': 'ignore', 'label': 'Ошибки'},
                 'prop': {'type': 'list', 'default': 'int',
-                         'items': props, 'label': 'Extract from datetime'}}
+                         'items': props, 'label': 'Извлечь из datetime'}}
 
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Convert/Extract Dates')
+        dlg = dialogs.MultipleInputDialog(self, opts, title='Преобразование / извлечение дат ')
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -815,15 +815,15 @@ class DataFrameWidget(QWidget):
         funcs = ['', 'split', 'strip', 'lstrip', 'lower', 'upper', 'title', 'swapcase', 'len',
                  'slice', 'replace', 'concat']
         opts = {'function': {'type': 'combobox', 'default': '',
-                             'items': funcs, 'label': 'Function'},
-                'sep': {'type': 'entry', 'default': ',', 'label': 'Split separator'},
-                'start': {'type': 'entry', 'default': 0, 'label': 'Slice start'},
-                'end': {'type': 'entry', 'default': 1, 'label': 'Slice end'},
-                'pat': {'type': 'entry', 'default': '', 'label': 'Pattern'},
-                'repl': {'type': 'entry', 'default': '', 'label': 'Replace with'},
-                'inplace': {'type': 'checkbox', 'default': False, 'label': 'In place'},
+                             'items': funcs, 'label': 'Функция'},
+                'sep': {'type': 'entry', 'default': ',', 'label': 'Разделитель'},
+                'start': {'type': 'entry', 'default': 0, 'label': 'Начало среза '},
+                'end': {'type': 'entry', 'default': 1, 'label': 'Конец среза '},
+                'pat': {'type': 'entry', 'default': '', 'label': 'Шаблон'},
+                'repl': {'type': 'entry', 'default': '', 'label': 'Заменить на'},
+                'inplace': {'type': 'checkbox', 'default': False, 'label': 'С перезаписью'},
                 }
-        dlg = dialogs.MultipleInputDialog(self, opts, title='String Operation', width=300)
+        dlg = dialogs.MultipleInputDialog(self, opts, title='Строковые операции', width=300)
         dlg.exec_()
         if not dlg.accepted:
             return
@@ -1335,22 +1335,22 @@ class DataFrameTable(QTableView):
         # model = self.model
         menu = QMenu(self)
 
-        sortAction = menu.addAction("Sort ")
-        iconw = QIcon.fromTheme("open")
-        sortAction.setIcon(iconw)
+        sortAction = menu.addAction("Сортировать")
+        # iconw = QIcon.fromTheme("open")
+        # sortAction.setIcon(iconw)
         # setIndexAction = menu.addAction("Set as Index")
 
-        colmenu = QMenu("Column", menu)
-        deleteColumnAction = colmenu.addAction("Delete Column")
-        renameColumnAction = colmenu.addAction("Rename Column")
-        addColumnAction = colmenu.addAction("Add Column")
-        setTypeAction = colmenu.addAction("Set Data Type")
+        colmenu = QMenu("Столбец", menu)
+        deleteColumnAction = colmenu.addAction("Удалить")
+        renameColumnAction = colmenu.addAction("Переименовать")
+        addColumnAction = colmenu.addAction("Добавить")
+        setTypeAction = colmenu.addAction("Задать тип данных")
         menu.addAction(colmenu.menuAction())
         # fillAction = menu.addAction("Fill Data")
         # applyFunctionAction = menu.addAction("Apply Function")
         # transformResampleAction = menu.addAction("Transform/Resample")
-        stringOpAction = menu.addAction("String Operation")
-        datetimeAction = menu.addAction("Date/Time Conversion")
+        stringOpAction = menu.addAction("Строковые операции")
+        datetimeAction = menu.addAction("Преобразование даты / времени")
 
         # sortAction = menu.addAction("Sort By")
         action = menu.exec_(self.mapToGlobal(pos))
@@ -1373,6 +1373,7 @@ class DataFrameTable(QTableView):
             error_dialog = QMessageBox()
             error_dialog.setIcon(QMessageBox.Warning)
             error_dialog.setStandardButtons(QMessageBox.Ok)
+            error_dialog.setWindowTitle("Возникла ошибка:")
             error_dialog.setText(e.args[0])
 
             error_dialog.show()
@@ -1463,10 +1464,10 @@ class DataFrameTable(QTableView):
     def addColumn(self):
         """Add a  column"""
 
-        opts = {'name': {'label': 'Name', 'type': 'entry', 'default': ''},
-                'fill': {'label': 'Fill With', 'type': 'entry', 'default': ''}
+        opts = {'name': {'label': 'Имя', 'type': 'entry', 'default': ''},
+                'fill': {'label': 'Заполнить', 'type': 'entry', 'default': ''}
                 }
-        dlg = dialogs.MultipleInputDialog(self, opts, title='Add Column',
+        dlg = dialogs.MultipleInputDialog(self, opts, title='Добавить столбец',
                                           width=400, height=150)
         dlg.exec_()
         if not dlg.accepted:
@@ -1532,8 +1533,8 @@ class DataFrameTable(QTableView):
 
     def renameColumn(self, column=None):
 
-        name, ok = QInputDialog().getText(self, "Enter New Column Name",
-                                          "Name:", QLineEdit.Normal, text=column)
+        name, ok = QInputDialog().getText(self, "Введите новое имя столбца",
+                                          "Имя:", QLineEdit.Normal, text=column)
         if ok and name:
             self.model.df.rename(columns={column: name}, inplace=True)
             self.refresh()
