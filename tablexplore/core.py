@@ -82,8 +82,7 @@ class RowHeader(QHeaderView):
 class DataFrameWidget(QWidget):
     """Widget containing a tableview and toolbars"""
 
-    def __init__(self, parent=None, dataframe=None, app=None,
-                 toolbar=True, statusbar=True, **kwargs):
+    def __init__(self, parent=None, dataframe=None, app=None, **kwargs):
 
         super(DataFrameWidget, self).__init__()
         self.splitter = QSplitter(QtCore.Qt.Vertical, self)
@@ -93,10 +92,7 @@ class DataFrameWidget(QWidget):
         self.table = DataFrameTable(self, dataframe, **kwargs)
         self.splitter.addWidget(self.table)
         self.splitter.setSizes((500, 200))
-        if toolbar == True:
-            self.createToolbar()
-        if statusbar == True:
-            self.statusBar()
+        self.statusBar()
         self.pf = None
         self.app = app
         self.pyconsole = None
@@ -105,6 +101,8 @@ class DataFrameWidget(QWidget):
         self.filterdock = None
         self.mode = 'default'
         self.table.model.dataChanged.connect(self.stateChanged)
+
+        self.setLayout(self.layout)
         return
 
     # @Slot('QModelIndex','QModelIndex','int')
