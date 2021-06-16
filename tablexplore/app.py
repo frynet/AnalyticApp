@@ -29,7 +29,7 @@ from .qt import *
 import pandas as pd
 from .core import DataFrameModel, DataFrameTable, DataFrameWidget
 from .plotting import PlotViewer
-from . import util, data, core, dialogs
+from . import util, core, dialogs
 
 LAKES_PATH = os.getcwd() + "/Озёра/"
 homepath = os.path.expanduser("~")
