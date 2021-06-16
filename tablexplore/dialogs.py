@@ -48,6 +48,9 @@ class PseudoWidget:
     def clear(self):
         pass
 
+    def addItems(self, *args):
+        pass
+
 
 def dialogFromOptions(parent, opts, sections=None,
                       wrap=2, section_wrap=4,

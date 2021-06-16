@@ -9,9 +9,9 @@
 # Excluding test-script
 test.py
 
-# Excluding excel-types
-*.xls
-*.xlsx
+## Excluding excel-types
+#*.xls
+#*.xlsx
 
 # User-specific stuff
 .idea/**/workspace.xml

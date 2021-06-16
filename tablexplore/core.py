@@ -1354,7 +1354,15 @@ class DataFrameTable(QTableView):
         # transformResampleAction = menu.addAction("Transform/Resample")
         stringOpAction = menu.addAction("Строковые операции")
         datetimeAction = menu.addAction("Преобразование даты / времени")
-
+        df = self.model.df
+        print(str(df[column].dtype))
+        year_menu = "NoAction"
+        year_actions = {}
+        if str(df[column].dtype) == "datetime64[ns]":
+            year_menu = QMenu("Выбрать год", menu)
+            for year in df[column].dt.year.unique():
+                year_actions[year] = year_menu.addAction(str(year))
+            menu.addAction(year_menu.menuAction())
         # sortAction = menu.addAction("Sort By")
         action = menu.exec_(self.mapToGlobal(pos))
         try:
@@ -1376,6 +1384,10 @@ class DataFrameTable(QTableView):
                 self.parent.convertDates(column)
             elif action == stringOpAction:
                 self.parent.applyStringMethod(column)
+            elif action in year_actions.values():
+                for year, year_action in year_actions.items():
+                    if action == year_action:
+                        self.year_filter(column, year)
         except Exception as e:
             error_dialog = QMessageBox()
             error_dialog.setIcon(QMessageBox.Warning)
@@ -1386,6 +1398,11 @@ class DataFrameTable(QTableView):
             error_dialog.show()
             error_dialog.exec_()
         return
+
+    def year_filter(self, column, year):
+        df = self.model.df
+        self.model.df = df[df[column].dt.year == year]
+        self.refresh()
 
     def keyPressEvent(self, event):
 
